@@ -3,16 +3,24 @@ import 'package:myapp/api_client.dart'; // Import the API service
 
 
 class SignupPage extends StatelessWidget {
-  const SignupPage({Key? key});
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  SignupPage({Key? key});
   Future<void> _signup(BuildContext context) async {
-    String username = ''; 
-    String first_name = ''; 
-    String last_name = ''; 
-    String email = ''; 
-    String phone_number = ''; 
-    String password_hash = ''; 
+    String username = usernameController.text; 
+    String first_name = firstNameController.text; 
+    String last_name = lastNameController.text; 
+    String email = emailController.text; 
+    String phone_number = phoneNumberController.text; 
+    String password_hash = passwordController.text; 
 
     print('email is$email');
+    print('username $username');
     try {
       // Call the signup method from the API service
       final response = await APIService.signup(
@@ -72,6 +80,7 @@ class SignupPage extends StatelessWidget {
                 Column(
                   children: <Widget>[
                     TextField(
+                      controller: usernameController,
                       decoration: InputDecoration(
                           hintText: "Username",
                           border: OutlineInputBorder(
@@ -84,6 +93,7 @@ class SignupPage extends StatelessWidget {
 
                     const SizedBox(height: 15),
                     TextField(
+                      controller: firstNameController,
                       decoration: InputDecoration(
                           hintText: "First name",
                           border: OutlineInputBorder(
@@ -96,6 +106,7 @@ class SignupPage extends StatelessWidget {
 
                     const SizedBox(height: 15),
                     TextField(
+                      controller: lastNameController,
                       decoration: InputDecoration(
                           hintText: "Last name",
                           border: OutlineInputBorder(
@@ -109,6 +120,7 @@ class SignupPage extends StatelessWidget {
                     const SizedBox(height: 15),
 
                     TextField(
+                      controller: emailController,
                       decoration: InputDecoration(
                           hintText: "Email",
                           border: OutlineInputBorder(
@@ -122,6 +134,7 @@ class SignupPage extends StatelessWidget {
                     const SizedBox(height: 15),
 
                     TextField(
+                      controller: phoneNumberController,
                       decoration: InputDecoration(
                           hintText: "Phone number",
                           border: OutlineInputBorder(
@@ -135,6 +148,7 @@ class SignupPage extends StatelessWidget {
                     const SizedBox(height: 15),
 
                     TextField(
+                      controller: passwordController,
                       decoration: InputDecoration(
                         hintText: "Password",
                         border: OutlineInputBorder(
