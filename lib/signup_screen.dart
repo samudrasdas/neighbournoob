@@ -1,7 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/api_client.dart'; // Import the API service
+
 
 class SignupPage extends StatelessWidget {
-  const SignupPage({super.key});
+  const SignupPage({Key? key});
+  Future<void> _signup(BuildContext context) async {
+    String username = ''; 
+    String first_name = ''; 
+    String last_name = ''; 
+    String email = ''; 
+    String phone_number = ''; 
+    String password_hash = ''; 
+
+    print('email is$email');
+    try {
+      // Call the signup method from the API service
+      final response = await APIService.signup(
+        username: username,
+        first_name: first_name,
+        last_name: last_name,
+        email: email,
+        phone_number: phone_number,
+        password_hash: password_hash,
+      );
+
+      // Handle the response here, for example, navigate to a new page
+      print('Signup successful! Response: $response');
+      // Navigate to the login page after successful signup
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacementNamed(context, '/login');
+    } catch (e) {
+      // Handle errors, for example, show an error message
+      print('Signup failed: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +153,7 @@ class SignupPage extends StatelessWidget {
 
                     child: ElevatedButton(
                       onPressed: () {
+                        _signup(context);
                       },
                       style: ElevatedButton.styleFrom(
                         shape: const StadiumBorder(),
