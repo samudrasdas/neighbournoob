@@ -15,9 +15,12 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  // Booleans to track email and password validity
   bool isEmailValid = true;
   bool isPasswordValid = true; // Track password validity
 
+  // Function to handle signup process
   Future<void> _signup(BuildContext context) async {
     String username = usernameController.text; 
     String first_name = firstNameController.text; 
@@ -43,7 +46,6 @@ class _SignupPageState extends State<SignupPage> {
       Navigator.pushReplacementNamed(context, '/login');
     } catch (e) {
       // Handle errors, for example, show an error message
-      // print('Signup failed: $e');
       print('$e');
     }
   }
@@ -96,6 +98,8 @@ class _SignupPageState extends State<SignupPage> {
                           prefixIcon: const Icon(Icons.person)),
                     ),
 
+
+
                     const SizedBox(height: 15),
                     TextField(
                       controller: firstNameController,
@@ -131,13 +135,14 @@ class _SignupPageState extends State<SignupPage> {
                           borderRadius: BorderRadius.circular(18),
                           borderSide: BorderSide.none,
                         ),
-                        fillColor: isEmailValid
+                        fillColor: isEmailValid // Fill color based on email validity
                             ? const Color.fromARGB(255, 96, 92, 97).withOpacity(0.1)
                             : Colors.red.withOpacity(0.1),
                         filled: true,
                         prefixIcon: const Icon(Icons.email),
                       ),
                       onChanged: (value) {
+                        // Callback function invoked whenever the text field content changes
                         // Validate email using regex
                         bool isValid = RegExp(
                                 r"^[^@]+@[^@]+\.[^@]+$")
@@ -193,8 +198,8 @@ class _SignupPageState extends State<SignupPage> {
                  Container(
                   padding: const EdgeInsets.only(top: 3, left: 3),
                   child: ElevatedButton(
-                    onPressed: isEmailValid && isPasswordValid 
-                    ? () => _signup(context) : null,
+                    onPressed: isEmailValid && isPasswordValid // Enable button only if email and password are valid
+                    ? () => _signup(context) : null, // Disable button if email or password is invalid
                     style: ElevatedButton.styleFrom(
                       shape: const StadiumBorder(),
                       padding: const EdgeInsets.symmetric(vertical: 16),

@@ -36,4 +36,6 @@ class APIService {
         throw Exception('Failed to sign up (status code: ${response.statusCode}): ${response.body}');
     }
   }
+
+  static checkUsernameAvailability(String value) {}
 }
