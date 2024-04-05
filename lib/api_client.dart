@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+// API Service class for handling HTTP requests
 class APIService {
   static const String baseURL = 'https://neighbourpro.live'; // Update with your API base URL
 
+  // Function to perform signup
   static Future<Map<String, dynamic>> signup({
     required String username,
     required String first_name,
@@ -12,10 +14,11 @@ class APIService {
     required String phone_number,
     required String password_hash
   }) async {
+    // Making a POST request to the signup endpoint
     final response = await http.post(
       Uri.parse('$baseURL/auth/register'), // Adjust the endpoint according to your API
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+        'Content-Type': 'application/json; charset=UTF-8',// Specifying request headers
       },
       body: jsonEncode(<String, String>{
         'username': username,
@@ -28,7 +31,7 @@ class APIService {
     );
 
     if (response.statusCode == 201) {
-      // If the server returns a 200 OK response, parse the JSON
+      // If the server returns a 201 OK response, parse the JSON
       
       return jsonDecode(response.body);
     } else {

@@ -99,7 +99,6 @@ class _SignupPageState extends State<SignupPage> {
                     ),
 
 
-
                     const SizedBox(height: 15),
                     TextField(
                       controller: firstNameController,
@@ -112,6 +111,7 @@ class _SignupPageState extends State<SignupPage> {
                           filled: true,
                           prefixIcon: const Icon(Icons.person)),
                     ),
+
 
                     const SizedBox(height: 15),
                     TextField(
@@ -126,6 +126,8 @@ class _SignupPageState extends State<SignupPage> {
                           prefixIcon: const Icon(Icons.person)),
                     ),
                     
+
+                  
                     const SizedBox(height: 15),
                     TextField(
                       controller: emailController,
@@ -153,8 +155,8 @@ class _SignupPageState extends State<SignupPage> {
                       },
                     ),
 
-                    const SizedBox(height: 15),
 
+                    const SizedBox(height: 15),
                     TextField(
                       controller: phoneNumberController,
                       decoration: InputDecoration(
@@ -167,8 +169,8 @@ class _SignupPageState extends State<SignupPage> {
                           prefixIcon: const Icon(Icons.phone)),
                     ),
 
-                    const SizedBox(height: 15),
 
+                    const SizedBox(height: 15),
                     TextField(
                       controller: passwordController,
                       decoration: InputDecoration(
@@ -195,6 +197,8 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ],
                 ),
+
+
                  Container(
                   padding: const EdgeInsets.only(top: 3, left: 3),
                   child: ElevatedButton(
