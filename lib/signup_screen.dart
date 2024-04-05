@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/api_client.dart'; // Import the API service
 
+class SignupPage extends StatefulWidget {
+  SignupPage({super.key});
 
-class SignupPage extends StatelessWidget {
+  @override
+  // ignore: library_private_types_in_public_api
+  _SignupPageState createState() => _SignupPageState();
+}
+class _SignupPageState extends State<SignupPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool isEmailValid = true;
+  bool isPasswordValid = true; // Track password validity
 
-  SignupPage({Key? key});
   Future<void> _signup(BuildContext context) async {
     String username = usernameController.text; 
     String first_name = firstNameController.text; 
@@ -18,9 +25,6 @@ class SignupPage extends StatelessWidget {
     String email = emailController.text; 
     String phone_number = phoneNumberController.text; 
     String password_hash = passwordController.text; 
-
-    print('email is$email');
-    print('username $username');
     try {
       // Call the signup method from the API service
       final response = await APIService.signup(
@@ -31,7 +35,7 @@ class SignupPage extends StatelessWidget {
         phone_number: phone_number,
         password_hash: password_hash,
       );
-
+      print(response.runtimeType);
       // Handle the response here, for example, navigate to a new page
       print('Signup successful! Response: $response');
       // Navigate to the login page after successful signup
@@ -39,7 +43,8 @@ class SignupPage extends StatelessWidget {
       Navigator.pushReplacementNamed(context, '/login');
     } catch (e) {
       // Handle errors, for example, show an error message
-      print('Signup failed: $e');
+      // print('Signup failed: $e');
+      print('$e');
     }
   }
 
@@ -118,17 +123,29 @@ class SignupPage extends StatelessWidget {
                     ),
                     
                     const SizedBox(height: 15),
-
                     TextField(
                       controller: emailController,
                       decoration: InputDecoration(
-                          hintText: "Email",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide.none),
-                          fillColor: const Color.fromARGB(255, 96, 92, 97).withOpacity(0.1),
-                          filled: true,
-                          prefixIcon: const Icon(Icons.email)),
+                        hintText: "Email",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide.none,
+                        ),
+                        fillColor: isEmailValid
+                            ? const Color.fromARGB(255, 96, 92, 97).withOpacity(0.1)
+                            : Colors.red.withOpacity(0.1),
+                        filled: true,
+                        prefixIcon: const Icon(Icons.email),
+                      ),
+                      onChanged: (value) {
+                        // Validate email using regex
+                        bool isValid = RegExp(
+                                r"^[^@]+@[^@]+\.[^@]+$")
+                            .hasMatch(value);
+                        setState(() {
+                          isEmailValid = isValid;
+                        });
+                      },
                     ),
 
                     const SizedBox(height: 15),
@@ -152,33 +169,45 @@ class SignupPage extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: "Password",
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
-                            borderSide: BorderSide.none),
-                        fillColor: const Color.fromARGB(255, 96, 92, 97).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide.none,
+                        ),
+                        fillColor: isPasswordValid
+                            ? const Color.fromARGB(255, 96, 92, 97).withOpacity(0.1)
+                            : Colors.red.withOpacity(0.1),
                         filled: true,
                         prefixIcon: const Icon(Icons.password),
                       ),
                       obscureText: true,
+                      onChanged: (value) {
+                        bool isValid = RegExp(
+                                r"^(?=.*[a-zA-Z])(?=.*\d).{8,}$")
+                            .hasMatch(value);
+                        setState(() {
+                          isPasswordValid = isValid;
+                        });
+                      },
                     ),
                   ],
                 ),
-                Container(
-                    padding: const EdgeInsets.only(top: 3, left: 3),
-
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _signup(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: const Color.fromARGB(255, 36, 30, 30),
+                 Container(
+                  padding: const EdgeInsets.only(top: 3, left: 3),
+                  child: ElevatedButton(
+                    onPressed: isEmailValid && isPasswordValid 
+                    ? () => _signup(context) : null,
+                    style: ElevatedButton.styleFrom(
+                      shape: const StadiumBorder(),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      backgroundColor: const Color.fromARGB(255, 36, 30, 30),
+                    ),
+                    child: const Text(
+                      "Sign up",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Color.fromARGB(255, 230, 220, 220),
                       ),
-                      child: const Text(
-                        "Sign up",
-                        style: TextStyle(fontSize: 20,color:Color.fromARGB(255, 230, 220, 220)),
-                      ),
-                    )
+                    ),
+                  ),
                 ),
 
                 
