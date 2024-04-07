@@ -5,7 +5,11 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('NeighbourPro'),
+        title: Text('NeighbourPro',
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+        ),
+        ),
         centerTitle: true,
         backgroundColor: Colors.grey,
         leading: IconButton(

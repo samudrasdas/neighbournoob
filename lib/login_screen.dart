@@ -97,7 +97,7 @@ class LoginPage extends StatelessWidget {
           Navigator.pushReplacementNamed(context, '/signup');
         },
         child: const Text(
-          "Sign Up",
+          "Register",
           style: TextStyle(color: Color.fromARGB(255, 36, 30, 30)),
         ),
       )

@@ -8,6 +8,8 @@ class SignupPage extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   _SignupPageState createState() => _SignupPageState();
 }
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class _SignupPageState extends State<SignupPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
@@ -19,6 +21,7 @@ class _SignupPageState extends State<SignupPage> {
   // Booleans to track email and password validity
   bool isEmailValid = true;
   bool isPasswordValid = true; // Track password validity
+  bool registrationComplete = false; // Track registration completion
 
   // Function to handle signup process
   Future<void> _signup(BuildContext context) async {
@@ -41,9 +44,13 @@ class _SignupPageState extends State<SignupPage> {
       print(response.runtimeType);
       // Handle the response here, for example, navigate to a new page
       print('Signup successful! Response: $response');
+      setState(() {
+        registrationComplete = true;
+      });
       // Navigate to the login page after successful signup
       // ignore: use_build_context_synchronously
-      Navigator.pushReplacementNamed(context, '/login');
+      navigatorKey.currentState?.pushReplacementNamed('/login');
+
     } catch (e) {
       // Handle errors, for example, show an error message
       print('$e');
@@ -69,7 +76,7 @@ class _SignupPageState extends State<SignupPage> {
                     const SizedBox(height: 60.0),
 
                     const Text(
-                      "Sign up",
+                      "Register",
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
@@ -139,7 +146,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                         fillColor: isEmailValid // Fill color based on email validity
                             ? const Color.fromARGB(255, 96, 92, 97).withOpacity(0.1)
-                            : Colors.red.withOpacity(0.1),
+                            : const Color.fromARGB(255, 182, 37, 26).withOpacity(0.1),
                         filled: true,
                         prefixIcon: const Icon(Icons.email),
                       ),
@@ -181,7 +188,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                         fillColor: isPasswordValid
                             ? const Color.fromARGB(255, 96, 92, 97).withOpacity(0.1)
-                            : Colors.red.withOpacity(0.1),
+                            : const Color.fromARGB(255, 182, 37, 26).withOpacity(0.1),
                         filled: true,
                         prefixIcon: const Icon(Icons.password),
                       ),
@@ -210,7 +217,7 @@ class _SignupPageState extends State<SignupPage> {
                       backgroundColor: const Color.fromARGB(255, 36, 30, 30),
                     ),
                     child: const Text(
-                      "Sign up",
+                      "Register",
                       style: TextStyle(
                         fontSize: 20,
                         color: Color.fromARGB(255, 230, 220, 220),
@@ -218,6 +225,18 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ),
                 ),
+                if (registrationComplete)
+                  Center(
+                    child: Text(
+                      "Registration completed! Now you may Login",
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 95, 168, 95),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12, // Adjust font size
+                      ),
+                    ),
+                  ),
+
 
                 
                 Row(
