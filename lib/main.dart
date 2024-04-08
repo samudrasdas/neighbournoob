@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/worker.dart';
 import 'login_screen.dart';
 import 'home_page.dart'; // Assuming you have a home page implementation
 import 'signup_screen.dart';
@@ -18,7 +19,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => LoginPage(),
         '/signup': (context) => SignupPage(),
-        '/home': (context) => HomePage(), // Define route for home page
+        '/home': (context) => HomePage(),
+        '/worker': (context) => WorkerPage(),// Define route for home page
         
       },
     );
