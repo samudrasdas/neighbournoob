@@ -38,7 +38,6 @@ class _SignupPageState extends State<SignupPage> {
         first_name: first_name,
         last_name: last_name,
         email: email,
-        phone_number: phone_number,
         password_hash: password_hash,
       );
       print(response.runtimeType);
@@ -160,20 +159,6 @@ class _SignupPageState extends State<SignupPage> {
                           isEmailValid = isValid;
                         });
                       },
-                    ),
-
-
-                    const SizedBox(height: 15),
-                    TextField(
-                      controller: phoneNumberController,
-                      decoration: InputDecoration(
-                          hintText: "Phone number",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide.none),
-                          fillColor: const Color.fromARGB(255, 96, 92, 97).withOpacity(0.1),
-                          filled: true,
-                          prefixIcon: const Icon(Icons.phone)),
                     ),
 
 

@@ -11,7 +11,6 @@ class APIService {
     required String first_name,
     required String last_name,
     required String email,
-    required String phone_number,
     required String password_hash
   }) async {
     // Making a POST request to the signup endpoint
@@ -25,7 +24,6 @@ class APIService {
         'first_name': first_name,
         'last_name': last_name,
         'email': email,
-        'phone_number': phone_number,
         'password_hash': password_hash,
       }),
     );
