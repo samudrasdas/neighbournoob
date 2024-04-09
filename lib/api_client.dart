@@ -11,7 +11,7 @@ class APIService {
     required String first_name,
     required String last_name,
     required String email,
-    required String password_hash
+    required String password
   }) async {
     // Making a POST request to the signup endpoint
     final response = await http.post(
@@ -24,7 +24,7 @@ class APIService {
         'first_name': first_name,
         'last_name': last_name,
         'email': email,
-        'password_hash': password_hash,
+        'password': password,
       }),
     );
 

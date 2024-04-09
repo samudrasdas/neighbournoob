@@ -29,8 +29,7 @@ class _SignupPageState extends State<SignupPage> {
     String first_name = firstNameController.text; 
     String last_name = lastNameController.text; 
     String email = emailController.text; 
-    String phone_number = phoneNumberController.text; 
-    String password_hash = passwordController.text; 
+    String password = passwordController.text; 
     try {
       // Call the signup method from the API service
       final response = await APIService.signup(
@@ -38,7 +37,7 @@ class _SignupPageState extends State<SignupPage> {
         first_name: first_name,
         last_name: last_name,
         email: email,
-        password_hash: password_hash,
+        password: password,
       );
       print(response.runtimeType);
       // Handle the response here, for example, navigate to a new page
@@ -48,8 +47,6 @@ class _SignupPageState extends State<SignupPage> {
       });
       // Navigate to the login page after successful signup
       // ignore: use_build_context_synchronously
-      navigatorKey.currentState?.pushReplacementNamed('/login');
-
     } catch (e) {
       // Handle errors, for example, show an error message
       print('$e');
