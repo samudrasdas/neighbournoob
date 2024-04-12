@@ -21,7 +21,6 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => SignupPage(),
         '/home': (context) => HomePage(),
         '/worker': (context) => WorkerPage(),// Define route for home page
-        
       },
     );
   }

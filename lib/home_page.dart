@@ -1,6 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/api_client.dart'; // Import the API service
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<String> recommendedProfessions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchRecommendedProfessions();
+  }
+
+  Future<void> fetchRecommendedProfessions() async {
+    try {
+      final List<String> professions = await APIService.fetchRecommendedProfessions();
+      print('Recommended Professions: $professions');
+      setState(() {
+        recommendedProfessions = professions;
+      });
+    } catch (e) {
+      print('Error fetching recommended professions: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,6 +141,36 @@ class HomePage extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+          ),
+          // Recommended professions section
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Recommended for you',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                SizedBox(height: 10),
+                // Displaying recommended professions
+                Wrap(
+                  spacing: 8.0,
+                  children: recommendedProfessions
+                      .map(
+                        (profession) => Chip(
+                          label: Text(profession),
+                          backgroundColor: const Color.fromARGB(255, 253, 253, 253),
+                          labelStyle: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ],
             ),
           ),
         ],

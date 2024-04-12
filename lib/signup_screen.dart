@@ -21,7 +21,7 @@ class _SignupPageState extends State<SignupPage> {
   // Booleans to track email and password validity
   bool isEmailValid = true;
   bool isPasswordValid = true; // Track password validity
-  bool registrationComplete = false; // Track registration completion
+  bool? registrationComplete; // Track registration completion
 
   // Function to handle signup process
   Future<void> _signup(BuildContext context) async {
@@ -50,6 +50,9 @@ class _SignupPageState extends State<SignupPage> {
     } catch (e) {
       // Handle errors, for example, show an error message
       print('$e');
+      setState(() {
+        registrationComplete = false;
+      });
     }
   }
 
@@ -207,12 +210,23 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ),
                 ),
-                if (registrationComplete)
+                 if (registrationComplete == true)
                   Center(
                     child: Text(
                       "Registration completed! Now you may Login",
                       style: TextStyle(
                         color: Color.fromARGB(255, 95, 168, 95),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12, // Adjust font size
+                      ),
+                    ),
+                  ),
+                if (registrationComplete == false)
+                  Center(
+                    child: Text(
+                      "User already exists!",
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 182, 37, 26),
                         fontWeight: FontWeight.bold,
                         fontSize: 12, // Adjust font size
                       ),
