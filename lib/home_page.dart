@@ -52,7 +52,8 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(Icons.person),
             onPressed: () {
-              print('Human icon pressed');
+              Navigator.pushReplacementNamed(context, '/profile');
+              
             },
           ),
         ],

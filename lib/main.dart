@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/worker.dart';
 import 'login_screen.dart';
 import 'home_page.dart'; // Assuming you have a home page implementation
+import 'profilepage.dart';
 import 'signup_screen.dart';
 void main() {
   runApp(MyApp());
@@ -20,7 +21,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginPage(),
         '/signup': (context) => SignupPage(),
         '/home': (context) => HomePage(),
-        '/worker': (context) => WorkerPage(),// Define route for home page
+        '/worker': (context) => WorkerPage(),
+        '/profile':(context) => ProfilePage(),// Define route for home page
       },
     );
   }
