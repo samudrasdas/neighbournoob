@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                           color: const Color.fromARGB(255, 238, 237, 237),
-                          fontStyle: FontStyle.italic,
+                          fontStyle: FontStyle.normal,
                         ),
                       ),
                     ),
@@ -190,7 +190,7 @@ class _HomePageState extends State<HomePage> {
   void _showPopupMenu(BuildContext context) {
     final RenderBox bar = context.findRenderObject() as RenderBox;
     final Offset position = bar.localToGlobal(Offset.zero) + Offset(0.0, kToolbarHeight);
-    final RenderBox overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
     showMenu(
       context: context,
       position: RelativeRect.fromRect(
