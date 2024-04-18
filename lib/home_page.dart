@@ -42,10 +42,14 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         elevation: 18, // Elevation for shadow effect
         shadowColor: Colors.grey, // Shadow color
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () {
-            print('Sandwich icon pressed');
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                _showPopupMenu(context); // Show dropdown menu
+              },
+            );
           },
         ),
         actions: [
@@ -53,7 +57,6 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.person),
             onPressed: () {
               Navigator.pushReplacementNamed(context, '/profile');
-              
             },
           ),
         ],
@@ -181,6 +184,30 @@ class _HomePageState extends State<HomePage> {
         shadowColor: Colors.grey, // Shadow color
         child: CustomBottomNavigationBar(),
       ),
+    );
+  }
+
+  void _showPopupMenu(BuildContext context) {
+    final RenderBox bar = context.findRenderObject() as RenderBox;
+    final Offset position = bar.localToGlobal(Offset.zero) + Offset(0.0, kToolbarHeight);
+    final RenderBox overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
+    showMenu(
+      context: context,
+      position: RelativeRect.fromRect(
+        position & Size(50, 50), // smaller rect, the popup itself
+        Offset.zero & overlay.size, // Bigger rect, the entire screen
+      ),
+      items: [
+        PopupMenuItem(
+          child: ListTile(
+            leading: Icon(Icons.logout),
+            title: Text('Logout'),
+            onTap: () {
+              // Handle logout here
+            },
+          ),
+        ),
+      ],
     );
   }
 }

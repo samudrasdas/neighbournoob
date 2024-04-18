@@ -99,8 +99,6 @@ class _ProfileBodyState extends State<ProfileBody> {
               SizedBox(height: 10.0),
               ProfileTextBox(label: 'Email ID', icon: Icons.email, text: emailId),
               SizedBox(height: 10.0),
-              ProfileTextBox(label: 'Profile Status', icon: Icons.info, text: profileStatus),
-              SizedBox(height: 20.0),
               Center(
                 child: SizedBox(
                   width: 250, // Adjust the width as needed
