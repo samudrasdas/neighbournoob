@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                           color: const Color.fromARGB(255, 238, 237, 237),
-                          fontStyle: FontStyle.normal,
+                          fontStyle: FontStyle.italic,
                         ),
                       ),
                     ),

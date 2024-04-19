@@ -145,7 +145,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                         fillColor: isEmailValid // Fill color based on email validity
                             ? const Color.fromARGB(255, 96, 92, 97).withOpacity(0.1)
-                            : const Color.fromARGB(255, 182, 37, 26).withOpacity(0.1),
+                            : Color.fromARGB(255, 243, 22, 7).withOpacity(0.3),
                         filled: true,
                         prefixIcon: const Icon(Icons.email),
                       ),
@@ -173,7 +173,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                         fillColor: isPasswordValid
                             ? const Color.fromARGB(255, 96, 92, 97).withOpacity(0.1)
-                            : const Color.fromARGB(255, 182, 37, 26).withOpacity(0.1),
+                            : Color.fromARGB(255, 243, 2, 2).withOpacity(0.3),
                         filled: true,
                         prefixIcon: const Icon(Icons.password),
                       ),
