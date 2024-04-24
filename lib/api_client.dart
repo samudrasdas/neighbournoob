@@ -54,6 +54,16 @@ class APIService {
     }
   }
 
+ static Future<List<String>> fetchProfessions() async {
+    final response = await http.get(Uri.parse('$baseURL/users/professions'));
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      final List<String> professions = data.map((e) => e['name'] as String).toList();
+      return professions;
+    } else {
+      throw Exception('Failed to fetch professions');
+    }
+  }
 static Future<List<String>> fetchRecommendedProfessions() async {
     try {
       final response = await http.get(Uri.parse('$baseURL/users/recommend'));

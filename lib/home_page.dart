@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 import 'package:myapp/api_client.dart'; // Import the API service
 
 class HomePage extends StatefulWidget {
@@ -95,16 +96,36 @@ class _HomePageState extends State<HomePage> {
                         border: Border.all(color: Colors.black),
                         borderRadius: BorderRadius.circular(20.0),
                       ),
-                      child: Text(
-                        'You can search for friendly neighbourhood professionals',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: const Color.fromARGB(255, 238, 237, 237),
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
+                      child: recommendedProfessions.isNotEmpty
+                          ? Marquee(
+                              text: recommendedProfessions.join('    •    '),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: const Color.fromARGB(255, 238, 237, 237),
+                                fontStyle: FontStyle.italic,
+                              ),
+                              scrollAxis: Axis.horizontal,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              blankSpace: 20.0,
+                              velocity: 30.0,
+                              pauseAfterRound: Duration(seconds: 1),
+                              startPadding: 10.0,
+                              accelerationDuration: Duration(seconds: 1),
+                              accelerationCurve: Curves.linear,
+                              decelerationDuration: Duration(milliseconds: 500),
+                              decelerationCurve: Curves.easeOut,
+                            )
+                          : Text(
+                              'You can search for friendly neighbourhood professionals',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: const Color.fromARGB(255, 238, 237, 237),
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
                     ),
                   ),
                 ),
@@ -117,7 +138,7 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets.all(16.0),
               child: GridView.count(
                 shrinkWrap: true,
-                crossAxisCount: 3,
+                crossAxisCount: 2,
                 children: [
                   ProfessionCard(
                     title: 'Plumber',
@@ -148,35 +169,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           // Recommended professions section
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Recommended for you',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                SizedBox(height: 10),
-                // Displaying recommended professions
-                Wrap(
-                  spacing: 8.0,
-                  children: recommendedProfessions
-                      .map(
-                        (profession) => Chip(
-                          label: Text(profession),
-                          backgroundColor: const Color.fromARGB(255, 253, 253, 253),
-                          labelStyle: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                        ),
-                      )
-                      .toList(),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
       bottomNavigationBar: Material(
