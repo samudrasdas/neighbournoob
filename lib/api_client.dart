@@ -5,6 +5,22 @@ import 'package:http/http.dart' as http;
 class APIService {
   static const String baseURL = 'https://neighbourpro.live'; // Update with your API base URL
 
+
+  static Future<Map<String, dynamic>> login(String username, String password) async {
+    final response = await http.post(
+      Uri.parse('$baseURL/auth/login'),
+      body: {'username': username, 'password': password},
+    );
+
+    if (response.statusCode == 200) {
+      // Decode the JSON response body into a Map<String, dynamic>
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      return responseBody;
+    } else {
+      throw Exception('Failed to login');
+    }
+  }
+
   // Function to perform signup
   static Future<Map<String, dynamic>> signup({
     required String username,

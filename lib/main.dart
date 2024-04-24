@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/worker.dart';
-import 'login_screen.dart';
-import 'home_page.dart'; // Assuming you have a home page implementation
-import 'profilepage.dart';
-import 'signup_screen.dart';
-void main() {
-  runApp(MyApp());
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:myapp/home_page.dart'; // Assuming you have a home page implementation
+import 'package:myapp/login_screen.dart';
+import 'package:myapp/profilepage.dart';
+import 'package:myapp/signup_screen.dart';
+import 'package:myapp/worker.dart'; // Assuming you have a worker page implementation
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Wait for widgets to initialize
+
+  final storage = FlutterSecureStorage();
+  final token = await storage.read(key: 'jwt_token');
+
+  runApp(MyApp(initialRoute: token != null ? '/home' : '/login'));
 }
 
 class MyApp extends StatelessWidget {
+  final String initialRoute;
+
+  const MyApp({required this.initialRoute});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,13 +27,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/login', // Set initial route to login page
+      initialRoute: initialRoute, // Set initial route based on token presence
       routes: {
         '/login': (context) => LoginPage(),
         '/signup': (context) => SignupPage(),
         '/home': (context) => HomePage(),
         '/worker': (context) => WorkerPage(),
-        '/profile':(context) => ProfilePage(),// Define route for home page
+        '/profile': (context) => ProfilePage(),
       },
     );
   }

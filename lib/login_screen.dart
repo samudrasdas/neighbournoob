@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:myapp/api_client.dart';
 // Import home_page.dart
 
 class LoginPage extends StatelessWidget {
+  final TextEditingController usernameController=TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  LoginPage({super.key});
   
-  const LoginPage({super.key});
+  get access_token => null;
+  
+  get token_type => null;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +49,7 @@ class LoginPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         TextField(
+          controller: usernameController,
           decoration: InputDecoration(
               hintText: "Username",
               border: OutlineInputBorder(
@@ -54,6 +62,7 @@ class LoginPage extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         TextField(
+          controller: passwordController,
           decoration: InputDecoration(
             hintText: "Password",
             border: OutlineInputBorder(
@@ -67,9 +76,30 @@ class LoginPage extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         ElevatedButton(
-          onPressed: () {
-            // Navigate to home page ("/home") on login button press
-            Navigator.pushReplacementNamed(context, '/home');
+          onPressed: () async {
+          // Send credentials to the API class for authentication
+          final String username = usernameController.text.trim();
+          final String password = passwordController.text.trim();
+          final token = await APIService.login(username, password);
+
+          // Save the token in Flutter Secure Storage
+          if (token['access_token'] != null && token['token_type'] != null) {
+              final String accessToken = token['access_token'];
+              final String tokenType = token['token_type'];
+              print('Access Token: $accessToken');
+              print('Token type : $tokenType');
+
+              // Save the access token and its type in Flutter Secure Storage
+              final storage = FlutterSecureStorage();
+              await storage.write(key: 'access_token', value: accessToken);
+              await storage.write(key: 'token_type', value: tokenType);
+
+              // Navigate to the home page ("/home") on successful login
+              Navigator.pushReplacementNamed(context, '/home');
+            } else {
+              // Handle login failure
+              // Show error message to the user
+            }
           },
           style: ElevatedButton.styleFrom(
             shape: const StadiumBorder(),
