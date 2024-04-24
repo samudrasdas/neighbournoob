@@ -55,30 +55,31 @@ class APIService {
   }
 
 static Future<List<String>> fetchRecommendedProfessions() async {
-  try {
-    final response = await http.get(Uri.parse('$baseURL/users/recommend'));
-    if (response.statusCode == 200) {
-      final dynamic data = jsonDecode(response.body);
-      if (data is List) {
-        final List<String> recommendedProfessions = data.map((item) => item['name'] as String).toList();
-        return recommendedProfessions;
-      } else if (data is Map<String, dynamic>) {
-        // Handle if the response is a map
-        final List<String> recommendedProfessions = [];
-        data.forEach((key, value) {
-          recommendedProfessions.add(value.toString());
-        });
-        return recommendedProfessions;
-      } else {
-        throw Exception('Unexpected response format');
-      }
-    } else {
-      throw Exception('Failed to fetch recommended professions');
-    }
-  } catch (e) {
-    throw Exception('Error fetching recommended professions: $e');
-  }
-}
-  static checkUsernameAvailability(String value) {}
+    try {
+      final response = await http.get(Uri.parse('$baseURL/users/recommend'));
+      if (response.statusCode == 200) {
+        final dynamic data = jsonDecode(response.body);
+        final List<dynamic> recommendations = data['recommendations'];
 
+        // Extract names from recommendations
+        final List<String> professionNames = [];
+        for (final recommendation in recommendations) {
+          final String name = recommendation['name'] as String;
+          professionNames.add(name);
+        }
+
+        return professionNames;
+      } else {
+        throw Exception('Failed to fetch recommended professions');
+      }
+    } catch (e) {
+      throw Exception('Error fetching recommended professions: $e');
+    }
+  }
+
+  static Future<bool> checkUsernameAvailability(String value) async {
+    // Implement username availability check logic
+    // Return true if the username is available, false otherwise
+    return true;
+  }
 }
