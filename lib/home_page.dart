@@ -10,11 +10,25 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   
   List<String> recommendedProfessions = [];
+  List<Profession> allProfessions = [];
 
   @override
   void initState() {
     super.initState();
     fetchRecommendedProfessions();
+    fetchProfessions();
+  }
+
+  Future<void> fetchProfessions() async {
+    try {
+      final List<Profession> professions = await APIService.fetchProfessions();
+      // print('Recommended Professions: $professions');
+      setState(() {
+      allProfessions = professions;
+      });
+    } catch (e) {
+      print('Error fetching recommended professions: $e');
+    }
   }
 
   Future<void> fetchRecommendedProfessions() async {
@@ -141,31 +155,11 @@ class _HomePageState extends State<HomePage> {
                 shrinkWrap: true,
                 crossAxisCount: 2,
                 children: [
-                  ProfessionCard(
-                    title: 'Plumber',
-                    icon: Icons.plumbing,
-                  ),
-                  ProfessionCard(
-                    title: 'Electrician',
-                    icon: Icons.lightbulb,
-                  ),
-                  ProfessionCard(
-                    title: 'Climber',
-                    icon: Icons.nature,
-                  ),
-                  ProfessionCard(
-                    title: 'Babysitter',
-                    icon: Icons.child_care,
-                  ),
-                  ProfessionCard(
-                    title: 'Mechanic',
-                    icon: Icons.build,
-                  ),
-                  ProfessionCard(
-                    title: 'Gardener',
-                    icon: Icons.eco,
-                  ),
-                ],
+                  for (final profession in allProfessions)
+                    ProfessionCard(
+                      title: profession.name,
+                      icon: Icons.work,
+                    ),],
               ),
             ),
           ),

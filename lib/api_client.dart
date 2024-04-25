@@ -2,6 +2,17 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 // API Service class for handling HTTP requests
+
+class Profession {
+  final String name;
+
+  Profession(this.name);
+
+  factory Profession.fromJson(Map<String, dynamic> json) {
+    return Profession(json['name'] as String);
+  }
+}
+
 class APIService {
   static const String baseURL = 'https://neighbourpro.live'; // Update with your API base URL
 
@@ -54,16 +65,16 @@ class APIService {
     }
   }
 
- static Future<List<String>> fetchProfessions() async {
+static Future<List<Profession>> fetchProfessions() async {
     final response = await http.get(Uri.parse('$baseURL/users/professions'));
     if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      final List<String> professions = data.map((e) => e['name'] as String).toList();
-      return professions;
+      final data = json.decode(response.body) as List;
+      return data.map((item) => Profession.fromJson(item)).toList();
     } else {
-      throw Exception('Failed to fetch professions');
+      throw Exception('Failed to load professions');
     }
   }
+
 static Future<List<String>> fetchRecommendedProfessions() async {
     try {
       final response = await http.get(Uri.parse('$baseURL/users/recommend'));
