@@ -39,9 +39,9 @@ class _SignupPageState extends State<SignupPage> {
         email: email,
         password: password,
       );
-      print(response.runtimeType);
+      // print(response.runtimeType);
       // Handle the response here, for example, navigate to a new page
-      print('Signup successful! Response: $response');
+      // print('Signup successful! Response: $response');
       setState(() {
         registrationComplete = true;
       });

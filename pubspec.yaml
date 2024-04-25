@@ -20,6 +20,7 @@ dependencies:
   http: ^1.2.1
   flutter_secure_storage: ^5.0.2
   marquee: ^2.0.2
+  fluttertoast: ^8.2.5
 
 
 

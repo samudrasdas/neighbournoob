@@ -92,4 +92,18 @@ static Future<List<String>> fetchRecommendedProfessions() async {
     // Return true if the username is available, false otherwise
     return true;
   }
+
+  static Future<bool> checkTokenValidity(String token) async {
+    // return true if the token is valid, false otherwise
+    try {
+      final response = await http.get(
+        Uri.parse('$baseURL/auth/me'),
+        headers: { 'Authorization': 'Bearer $token' },
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+
+    }
+  }
 }

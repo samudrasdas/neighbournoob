@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:myapp/api_client.dart';
 import 'package:myapp/home_page.dart'; // Assuming you have a home page implementation
 import 'package:myapp/login_screen.dart';
 import 'package:myapp/profilepage.dart';
@@ -12,7 +13,17 @@ void main() async {
   final storage = FlutterSecureStorage();
   final token = await storage.read(key: 'jwt_token');
 
-  runApp(MyApp(initialRoute: token != null ? '/home' : '/login'));
+  bool isValidToken = false;
+  if (token != null) {
+    try {
+      isValidToken = await APIService.checkTokenValidity(token);
+    } catch (e) {
+      print('Error checking token validity: $e');
+    }
+  }
+  print(isValidToken);
+
+  runApp(MyApp(initialRoute: isValidToken ? '/home' : '/login'));
 }
 
 class MyApp extends StatelessWidget {
