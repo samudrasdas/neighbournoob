@@ -8,6 +8,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  
   List<String> recommendedProfessions = [];
 
   @override
@@ -19,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchRecommendedProfessions() async {
     try {
       final List<String> professions = await APIService.fetchRecommendedProfessions();
-      print('Recommended Professions: $professions');
+      // print('Recommended Professions: $professions');
       setState(() {
         recommendedProfessions = professions;
       });
