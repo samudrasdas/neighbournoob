@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myapp/api_client.dart'; // Import the API service
+import 'package:myapp/storage_service.dart'; // Import the storage service
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
+
+final storage = StorageService();
 
 class _HomePageState extends State<HomePage> {
   
@@ -190,7 +194,9 @@ class _HomePageState extends State<HomePage> {
             leading: Icon(Icons.logout),
             title: Text('Logout'),
             onTap: () {
-              // Handle logout here
+              storage.deleteToken();
+              Fluttertoast.showToast(msg: "Logout Successful");
+              Navigator.pushReplacementNamed(context, '/login');
             },
           ),
         ),
