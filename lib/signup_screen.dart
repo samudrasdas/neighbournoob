@@ -32,7 +32,7 @@ class _SignupPageState extends State<SignupPage> {
     String password = passwordController.text; 
     try {
       // Call the signup method from the API service
-      final response = await APIService.signup(
+      await APIService.signup(
         username: username,
         first_name: first_name,
         last_name: last_name,
