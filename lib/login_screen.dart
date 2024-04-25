@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myapp/api_client.dart';
+import 'package:myapp/storage_service.dart';
 // Import home_page.dart
 
 class LoginPage extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   LoginPage({super.key});
+  final storage = StorageService();
   
-  get access_token => null;
-  
-  get token_type => null;
+  get accessToken => null;
+  get tokenType => null;
 
   @override
   Widget build(BuildContext context) {
@@ -87,13 +87,11 @@ class LoginPage extends StatelessWidget {
           if (token['access_token'] != null && token['token_type'] != null) {
               final String accessToken = token['access_token'];
               final String tokenType = token['token_type'];
-              // print('Access Token: $accessToken');
-              // print('Token type : $tokenType');
 
               // Save the access token and its type in Flutter Secure Storage
-              final storage = FlutterSecureStorage();
-              await storage.write(key: 'access_token', value: accessToken);
-              await storage.write(key: 'token_type', value: tokenType);
+              // final storage = FlutterSecureStorage();
+              await storage.storeToken(accessToken, tokenType);
+              // await storage.write(key: 'token_type', value: tokenType);
               Fluttertoast.showToast(msg: "Login Successful");
 
               // Navigate to the home page ("/home") on successful login

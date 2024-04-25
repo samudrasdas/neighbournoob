@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:myapp/storage_service.dart';
 import 'package:myapp/api_client.dart';
 import 'package:myapp/home_page.dart'; // Assuming you have a home page implementation
 import 'package:myapp/login_screen.dart';
@@ -10,8 +10,9 @@ import 'package:myapp/worker.dart'; // Assuming you have a worker page implement
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Wait for widgets to initialize
 
-  final storage = FlutterSecureStorage();
-  final token = await storage.read(key: 'jwt_token');
+  final storage = StorageService();
+  final token = await storage.getToken();
+  final tokenType = await storage.getTokenType();
 
   bool isValidToken = false;
   if (token != null) {
@@ -21,7 +22,6 @@ void main() async {
       print('Error checking token validity: $e');
     }
   }
-  print(isValidToken);
 
   runApp(MyApp(initialRoute: isValidToken ? '/home' : '/login'));
 }
