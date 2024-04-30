@@ -6,6 +6,7 @@ import 'package:myapp/login_screen.dart';
 import 'package:myapp/profilepage.dart';
 import 'package:myapp/signup_screen.dart';
 import 'package:myapp/worker.dart'; // Assuming you have a worker page implementation
+// import 'package:myapp/professionals_list.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Wait for widgets to initialize

@@ -3,6 +3,7 @@ import 'package:marquee/marquee.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myapp/api_client.dart'; // Import the API service
 import 'package:myapp/storage_service.dart'; // Import the storage service
+import 'package:myapp/professionals.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,7 +13,6 @@ class HomePage extends StatefulWidget {
 final storage = StorageService();
 
 class _HomePageState extends State<HomePage> {
-  
   List<String> recommendedProfessions = [];
   List<Profession> allProfessions = [];
 
@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
       final List<Profession> professions = await APIService.fetchProfessions();
       // print('Recommended Professions: $professions');
       setState(() {
-      allProfessions = professions;
+        allProfessions = professions;
       });
     } catch (e) {
       print('Error fetching recommended professions: $e');
@@ -37,7 +37,8 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchRecommendedProfessions() async {
     try {
-      final List<String> professions = await APIService.fetchRecommendedProfessions();
+      final List<String> professions =
+          await APIService.fetchRecommendedProfessions();
       // print('Recommended Professions: $professions');
       setState(() {
         recommendedProfessions = professions;
@@ -160,10 +161,25 @@ class _HomePageState extends State<HomePage> {
                 crossAxisCount: 2,
                 children: [
                   for (final profession in allProfessions)
-                    ProfessionCard(
-                      title: profession.name,
-                      icon: Icons.work,
-                    ),],
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProfessionDetailPage(
+                              professionName: profession.name,
+                              professionId: profession.id,
+                            ),
+                          ),
+                        );
+                      },
+                      child: ProfessionCard(
+                        id: profession.id,
+                        title: profession.name,
+                        icon: Icons.work,
+                      ),
+                    ),
+                ],
               ),
             ),
           ),
@@ -180,8 +196,10 @@ class _HomePageState extends State<HomePage> {
 
   void _showPopupMenu(BuildContext context) {
     final RenderBox bar = context.findRenderObject() as RenderBox;
-    final Offset position = bar.localToGlobal(Offset.zero) + Offset(0.0, kToolbarHeight);
-    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final Offset position =
+        bar.localToGlobal(Offset.zero) + Offset(0.0, kToolbarHeight);
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
     showMenu(
       context: context,
       position: RelativeRect.fromRect(
@@ -206,10 +224,11 @@ class _HomePageState extends State<HomePage> {
 }
 
 class ProfessionCard extends StatelessWidget {
+  final int id;
   final String title;
   final IconData icon;
 
-  const ProfessionCard({required this.title, required this.icon});
+  const ProfessionCard({required this.id, required this.title, required this.icon});
 
   @override
   Widget build(BuildContext context) {
