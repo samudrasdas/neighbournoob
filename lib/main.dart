@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/storage_service.dart';
 import 'package:myapp/api_client.dart';
 import 'package:myapp/home_page.dart'; // Assuming you have a home page implementation
 import 'package:myapp/login_screen.dart';
 import 'package:myapp/profilepage.dart';
 import 'package:myapp/signup_screen.dart';
 import 'package:myapp/worker.dart'; // Assuming you have a worker page implementation
-// import 'package:myapp/professionals_list.dart';
+import 'package:myapp/global_vars.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Wait for widgets to initialize
-
-  final storage = StorageService();
-  final token = await storage.getToken();
-  final tokenType = await storage.getTokenType();
+  
+  Map<String, String?> tokenData = await getGlobalToken();
+  String? token = tokenData['token'];
+  String? tokenType = tokenData['tokenType'];
 
   bool isValidToken = false;
   if (token != null) {

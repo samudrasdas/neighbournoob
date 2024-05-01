@@ -18,20 +18,17 @@ class Profession {
 class Professional {
   final String firstName;
   final String lastName;
-  final Float avgRating;
-  final Float distance;
-  final Float estimatedCost;
+  final double avgRating;
+  final double distance;
 
-  Professional(this.firstName, this.lastName, this.avgRating, this.distance,
-      this.estimatedCost);
+  Professional(this.firstName, this.lastName, this.avgRating, this.distance);
 
   factory Professional.fromJson(Map<String, dynamic> json) {
     return Professional(
       json['first_name'] as String,
       json['last_name'] as String,
-      json['avg_rating'] as Float,
-      json['distance'] as Float,
-      json['estimated_cost'] as Float,
+      json['worker'][0]['avg_rating'] as double,
+      json['distance_to_user_in_km'] as double,
     );
   }
 }
@@ -101,16 +98,15 @@ class APIService {
     }
   }
 
-  static Future<List<Professional>> fetchProfessionals(int id, String token) async {
+  static Future<List<Professional>> fetchProfessionals(int id, String token, String tokenType) async {
     final response = await http.get(
       Uri.parse('$baseURL/work/professionals/$id/filter'),
       headers: <String, String>{
-        'Authorization': 'Bearer $token',
+        'Authorization': '$tokenType $token',
       },
     );
     if (response.statusCode == 200) {
       final data = json.decode(response.body) as List;
-      print(data);
       return data.map((item) => Professional.fromJson(item)).toList();
     } else {
       print(response.statusCode);
