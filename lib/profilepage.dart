@@ -31,10 +31,10 @@ class ProfileBody extends StatefulWidget {
 }
 
 class _ProfileBodyState extends State<ProfileBody> {
-  String username = "john_doe";
+  String username = "John";
   String firstName = "John";
-  String lastName = "Doe";
-  String emailId = "john.doe@example.com";
+  String lastName = "Abhraham";
+  String emailId = "john@gmail.com";
   String profileStatus = "Worker";
 
   void changeProfileStatus() {

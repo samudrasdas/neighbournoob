@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:marquee/marquee.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myapp/api_client.dart'; // Import the API service
-import 'package:myapp/storage_service.dart'; // Import the storage service
+import 'package:myapp/storage_service.dart'; 
+import 'package:carousel_slider/carousel_slider.dart'; // Import the carousel_slider package
 import 'package:myapp/professionals.dart';
-
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -26,12 +25,11 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchProfessions() async {
     try {
       final List<Profession> professions = await APIService.fetchProfessions();
-      // print('Recommended Professions: $professions');
       setState(() {
         allProfessions = professions;
       });
     } catch (e) {
-      print('Error fetching recommended professions: $e');
+      print('Error fetching professions: $e');
     }
   }
 
@@ -86,7 +84,7 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(10.0),
             child: Column(
               children: [
                 Row(
@@ -104,51 +102,65 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
-                Center(
-                  child: SizedBox(
-                    height: 150,
-                    width: MediaQuery.of(context).size.width * 1,
-                    child: Container(
-                      padding: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 10, 10, 10),
-                        border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(20.0),
+                // Text(
+                //   'Recommended for You',
+                //   style: TextStyle(
+                //     fontWeight: FontWeight.normal,
+                //     fontSize: 20,
+                //     color: Colors.black,
+                //   ),
+                // ),
+                SizedBox(height: 22),
+                recommendedProfessions.isNotEmpty
+                    ? CarouselSlider(
+                        items: recommendedProfessions.map((profession) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return Container(
+                                width: MediaQuery.of(context).size.width,
+                                margin: EdgeInsets.symmetric(horizontal: 9.0),
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 10, 10, 10),
+                                  border: Border.all(color: Colors.black),
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    profession,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: const Color.fromARGB(255, 238, 237, 237),
+                                      fontStyle: FontStyle.normal,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }).toList(),
+                        options: CarouselOptions(
+                          height: 150,
+                          autoPlay: true,
+                          autoPlayInterval: Duration(seconds: 3),
+                          autoPlayAnimationDuration: Duration(milliseconds: 800),
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          pauseAutoPlayOnTouch: true,
+                          enlargeCenterPage: true,
+                          scrollDirection: Axis.horizontal,
+                          viewportFraction: 0.8
+                        ),
+                      )
+                    : Text(
+                        'You can search for friendly neighbourhood professionals',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: const Color.fromARGB(255, 238, 237, 237),
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
-                      child: recommendedProfessions.isNotEmpty
-                          ? Marquee(
-                              text: recommendedProfessions.join('    •    '),
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: const Color.fromARGB(255, 238, 237, 237),
-                                fontStyle: FontStyle.italic,
-                              ),
-                              scrollAxis: Axis.horizontal,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              blankSpace: 20.0,
-                              velocity: 30.0,
-                              pauseAfterRound: Duration(seconds: 1),
-                              startPadding: 10.0,
-                              accelerationDuration: Duration(seconds: 1),
-                              accelerationCurve: Curves.linear,
-                              decelerationDuration: Duration(milliseconds: 500),
-                              decelerationCurve: Curves.easeOut,
-                            )
-                          : Text(
-                              'You can search for friendly neighbourhood professionals',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: const Color.fromARGB(255, 238, 237, 237),
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -183,7 +195,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          // Recommended professions section
         ],
       ),
       bottomNavigationBar: Material(
@@ -234,7 +245,7 @@ class ProfessionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
-      margin: EdgeInsets.all(8),
+      margin: EdgeInsets.all(15),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -266,24 +277,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           IconButton(
-            icon: Icon(Icons.list),
-            color: Colors.black,
-            onPressed: () {
-              print('List icon pressed');
-            },
-          ),
-          IconButton(
             icon: Icon(Icons.notifications),
             color: Colors.black,
             onPressed: () {
               print('Notifications icon pressed');
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.settings),
-            color: Colors.black,
-            onPressed: () {
-              print('Settings icon pressed');
             },
           ),
           IconButton(

@@ -21,6 +21,7 @@ dependencies:
   flutter_secure_storage: ^5.0.2
   marquee: ^2.0.2
   fluttertoast: ^8.2.5
+  carousel_slider: ^4.0.0
 
 
 
