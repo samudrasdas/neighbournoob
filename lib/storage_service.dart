@@ -13,7 +13,7 @@ class StorageService {
   }
 
   Future<String?> getTokenType() async {
-    return await _storage.read(key: 'tokenType');
+    return await _storage.read(key: 'token_type');
   }
 
   Future<void> deleteToken() async {

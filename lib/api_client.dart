@@ -1,23 +1,44 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:http/http.dart' as http;
 
 // API Service class for handling HTTP requests
 
 class Profession {
+  final int id;
   final String name;
 
-  Profession(this.name);
+  Profession(this.name, this.id);
 
   factory Profession.fromJson(Map<String, dynamic> json) {
-    return Profession(json['name'] as String);
+    return Profession(json['name'] as String, json['id'] as int);
+  }
+}
+
+class Professional {
+  final String firstName;
+  final String lastName;
+  final double avgRating;
+  final double distance;
+
+  Professional(this.firstName, this.lastName, this.avgRating, this.distance);
+
+  factory Professional.fromJson(Map<String, dynamic> json) {
+    return Professional(
+      json['first_name'] as String,
+      json['last_name'] as String,
+      json['worker'][0]['avg_rating'] as double,
+      json['distance_to_user_in_km'] as double,
+    );
   }
 }
 
 class APIService {
-  static const String baseURL = 'https://neighbourpro.live'; // Update with your API base URL
+  static const String baseURL =
+      'https://neighbourpro.live'; // Update with your API base URL
 
-
-  static Future<Map<String, dynamic>> login(String username, String password) async {
+  static Future<Map<String, dynamic>> login(
+      String username, String password) async {
     final response = await http.post(
       Uri.parse('$baseURL/auth/login'),
       body: {'username': username, 'password': password},
@@ -33,18 +54,19 @@ class APIService {
   }
 
   // Function to perform signup
-  static Future<Map<String, dynamic>> signup({
-    required String username,
-    required String first_name,
-    required String last_name,
-    required String email,
-    required String password
-  }) async {
+  static Future<Map<String, dynamic>> signup(
+      {required String username,
+      required String first_name,
+      required String last_name,
+      required String email,
+      required String password}) async {
     // Making a POST request to the signup endpoint
     final response = await http.post(
-      Uri.parse('$baseURL/auth/register'), // Adjust the endpoint according to your API
+      Uri.parse(
+          '$baseURL/auth/register'), // Adjust the endpoint according to your API
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',// Specifying request headers
+        'Content-Type':
+            'application/json; charset=UTF-8', // Specifying request headers
       },
       body: jsonEncode(<String, String>{
         'username': username,
@@ -57,15 +79,16 @@ class APIService {
 
     if (response.statusCode == 201) {
       // If the server returns a 201 OK response, parse the JSON
-      
+
       return jsonDecode(response.body);
     } else {
       // If the server did not return a 200 OK response, throw an exception.
-        throw Exception('Failed to sign up (status code: ${response.statusCode}): ${response.body}');
+      throw Exception(
+          'Failed to sign up (status code: ${response.statusCode}): ${response.body}');
     }
   }
 
-static Future<List<Profession>> fetchProfessions() async {
+  static Future<List<Profession>> fetchProfessions() async {
     final response = await http.get(Uri.parse('$baseURL/users/professions'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body) as List;
@@ -75,7 +98,23 @@ static Future<List<Profession>> fetchProfessions() async {
     }
   }
 
-static Future<List<String>> fetchRecommendedProfessions() async {
+  static Future<List<Professional>> fetchProfessionals(int id, String token, String tokenType) async {
+    final response = await http.get(
+      Uri.parse('$baseURL/work/professionals/$id/filter'),
+      headers: <String, String>{
+        'Authorization': '$tokenType $token',
+      },
+    );
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body) as List;
+      return data.map((item) => Professional.fromJson(item)).toList();
+    } else {
+      print(response.statusCode);
+      throw Exception('Failed to load professionals.. oops!');
+    }
+  }
+
+  static Future<List<String>> fetchRecommendedProfessions() async {
     try {
       final response = await http.get(Uri.parse('$baseURL/users/recommend'));
       if (response.statusCode == 200) {
@@ -109,12 +148,11 @@ static Future<List<String>> fetchRecommendedProfessions() async {
     try {
       final response = await http.get(
         Uri.parse('$baseURL/auth/me'),
-        headers: { 'Authorization': 'Bearer $token' },
+        headers: {'Authorization': 'Bearer $token'},
       );
       return response.statusCode == 200;
     } catch (e) {
       return false;
-
     }
   }
 }
