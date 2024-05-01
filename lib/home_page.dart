@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(10.0),
             child: Column(
               children: [
                 Row(
@@ -101,15 +101,15 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                Text(
-                  'Recommended for You',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(height: 20),
+                // Text(
+                //   'Recommended for You',
+                //   style: TextStyle(
+                //     fontWeight: FontWeight.normal,
+                //     fontSize: 20,
+                //     color: Colors.black,
+                //   ),
+                // ),
+                SizedBox(height: 22),
                 recommendedProfessions.isNotEmpty
                     ? CarouselSlider(
                         items: recommendedProfessions.map((profession) {
@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
                             builder: (BuildContext context) {
                               return Container(
                                 width: MediaQuery.of(context).size.width,
-                                margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                margin: EdgeInsets.symmetric(horizontal: 9.0),
                                 decoration: BoxDecoration(
                                   color: Color.fromARGB(255, 10, 10, 10),
                                   border: Border.all(color: Colors.black),
@@ -147,6 +147,7 @@ class _HomePageState extends State<HomePage> {
                           pauseAutoPlayOnTouch: true,
                           enlargeCenterPage: true,
                           scrollDirection: Axis.horizontal,
+                          viewportFraction: 0.8
                         ),
                       )
                     : Text(
@@ -226,7 +227,7 @@ class ProfessionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
-      margin: EdgeInsets.all(8),
+      margin: EdgeInsets.all(15),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
