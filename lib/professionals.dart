@@ -100,10 +100,9 @@ class _ProfessionDetailPageState extends State<ProfessionDetailPage> {
                     ),
                   ),
                   SizedBox(height: 4),
-                  // RatingStars(rating: professional.avgRating),
                   RatingStars(rating: professional.avgRating),
                   Text(
-                    'Distance: $formattedDistance km',
+                    '$formattedDistance Km(s) away',
                     style: TextStyle(fontSize: 16),
                   ),
                 ],
