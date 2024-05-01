@@ -103,6 +103,14 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
+                 Text(
+      'Recommended for You',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 25,
+        color: Colors.black,
+      ),
+    ),
                 SizedBox(height: 20),
                 Center(
                   child: SizedBox(
@@ -122,7 +130,7 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
                                 color: const Color.fromARGB(255, 238, 237, 237),
-                                fontStyle: FontStyle.italic,
+                                fontStyle: FontStyle.normal,
                               ),
                               scrollAxis: Axis.horizontal,
                               crossAxisAlignment: CrossAxisAlignment.center,
