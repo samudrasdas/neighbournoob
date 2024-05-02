@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/api_client.dart';
-import 'package:myapp/global_vars.dart';
+import 'package:NeighbourPro/api_client.dart';
+import 'package:NeighbourPro/global_vars.dart';
+import 'package:NeighbourPro/shedule_work.dart';
 
 class RatingStars extends StatelessWidget {
   final double rating;
@@ -18,7 +19,8 @@ class RatingStars extends StatelessWidget {
           if (index < rating) {
             return Icon(Icons.star, color: Colors.yellow, size: starSize);
           } else {
-            return Icon(Icons.star_border, color: Colors.grey, size: starSize);
+            return Icon(Icons.star_border,
+                color: Color.fromARGB(255, 131, 131, 131), size: starSize);
           }
         },
       ),
@@ -73,43 +75,183 @@ class _ProfessionDetailPageState extends State<ProfessionDetailPage> {
         itemBuilder: (BuildContext context, int index) {
           final professional = allProfessionals[index];
           String formattedDistance = professional.distance.toStringAsFixed(1);
-          return Container(
-            margin: EdgeInsets.all(8.0),
-            padding: EdgeInsets.all(12.0),
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 255, 252, 255),
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Color.fromARGB(255, 231, 231, 231),
-                  blurRadius: 4,
-                  offset: Offset(4, 5), // Shadow position
-                ),
-              ],
-            ),
-            child: ListTile(
-              leading: Icon(Icons.account_circle, size: 64),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    '${professional.firstName} ${professional.lastName}',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+          return GestureDetector(
+            onTap: () {
+              // Navigate to another screen when a worker widget is tapped
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WorkerDetailPage(
+                    professional: professional,
                   ),
-                  SizedBox(height: 4),
-                  RatingStars(rating: professional.avgRating),
-                  Text(
-                    '$formattedDistance Km(s) away',
-                    style: TextStyle(fontSize: 16),
+                ),
+              );
+            },
+            child: Container(
+              margin: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 255, 252, 255),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color.fromARGB(255, 231, 231, 231),
+                    blurRadius: 4,
+                    offset: Offset(4, 5), // Shadow position
                   ),
                 ],
+              ),
+              child: ListTile(
+                leading: Icon(Icons.account_circle, size: 64),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      '${professional.firstName} ${professional.lastName}',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    RatingStars(rating: professional.avgRating),
+                    Text(
+                      '$formattedDistance Km(s) away',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class WorkerDetailPage extends StatelessWidget {
+  final Professional professional;
+
+  WorkerDetailPage({required this.professional});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Worker Detail'),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Profile photo section
+          Container(
+            height: MediaQuery.of(context).size.height / 3,
+            child: Center(
+              child: Icon(
+                Icons.account_circle,
+                size: 300,
+                color: const Color.fromARGB(255, 0, 0, 0),
+              ),
+            ),
+          ),
+          // Separator with drop shadow
+          Container(
+            height: 1,
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Color.fromARGB(255, 204, 204, 204).withOpacity(.2),
+                  spreadRadius: 5,
+                  blurRadius: 4,
+                  offset: Offset(2, 10),
+                ),
+              ],
+            ),
+          ),
+          // Bio part (scrollable)
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${professional.firstName} ${professional.lastName}',
+                    style: TextStyle(
+                      fontSize: 38,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 56, 56, 56),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        'Hourly Rate: ₹${professional.hourlyRate}',
+                        style: TextStyle(fontSize: 20, color: Colors.green),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  RatingStars(rating: professional.avgRating),
+                  SizedBox(height: 10),
+                  Text('About me',
+                      style: TextStyle(
+                          fontSize: 22,
+                          color: const Color.fromARGB(255, 102, 102, 102))),
+                  Text(
+                    professional.workerBio,
+                    style:
+                        TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ),
+          // Hire button
+          HireButton(professional: professional,),
+        ],
+      ),
+    );
+  }
+}
+
+class HireButton extends StatelessWidget {
+  final Professional professional;
+
+  HireButton({required this.professional});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(16),
+      // color: Colors.white,
+      child: ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(
+              Colors.green), // Set the background color to green
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.circular(8), // Adjust the radius as needed
+            ),
+          ),
+        ),
+        onPressed: () {
+          // Navigate to the confirmation page when the button is pressed
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    ScheduleWorkPage(professionalId: professional.id)), // Instantiate the confirmation page
+          );
+        },
+        child: Text(
+          'Hire for work',
+          style: TextStyle(
+              fontSize: 18, color: Color.fromARGB(255, 255, 255, 255)),
+        ),
       ),
     );
   }

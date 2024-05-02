@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/api_client.dart'; // Import the API service
+import 'package:NeighbourPro/api_client.dart'; // Import the API service
 
 class SignupPage extends StatefulWidget {
   SignupPage({super.key});

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 // API Service class for handling HTTP requests
@@ -15,19 +16,27 @@ class Profession {
 }
 
 class Professional {
+  final int id;
   final String firstName;
   final String lastName;
-  final double avgRating;
-  final double distance;
 
-  Professional(this.firstName, this.lastName, this.avgRating, this.distance);
+  final double avgRating;
+  final String workerBio;
+  final double distance;
+  final double hourlyRate;
+
+  Professional(this.id, this.firstName, this.lastName, this.avgRating,
+      this.workerBio, this.distance, this.hourlyRate);
 
   factory Professional.fromJson(Map<String, dynamic> json) {
     return Professional(
+      json['id'] as int,
       json['first_name'] as String,
       json['last_name'] as String,
       json['worker'][0]['avg_rating'] as double,
+      json['worker'][0]['worker_bio'] as String,
       json['distance_to_user_in_km'] as double,
+      json['worker'][0]['hourly_rate'] as double,
     );
   }
 }
@@ -48,6 +57,9 @@ class APIService {
       final Map<String, dynamic> responseBody = jsonDecode(response.body);
       return responseBody;
     } else {
+      Fluttertoast.showToast(
+          msg: 'Failed to login: ${response.statusCode}',
+          toastLength: Toast.LENGTH_SHORT);
       throw Exception('Failed to login');
     }
   }
@@ -97,7 +109,8 @@ class APIService {
     }
   }
 
-  static Future<List<Professional>> fetchProfessionals(int id, String token, String tokenType) async {
+  static Future<List<Professional>> fetchProfessionals(
+      int id, String token, String tokenType) async {
     final response = await http.get(
       Uri.parse('$baseURL/work/professionals/$id/filter'),
       headers: <String, String>{
@@ -152,6 +165,35 @@ class APIService {
       return response.statusCode == 200;
     } catch (e) {
       return false;
+    }
+  }
+
+  static Future<bool> scheduleWork(
+      String userDesc,
+      String schedDate,
+      String schedTime,
+      int assignedTo,
+      int professionID,
+      String tokenType,
+      String token) async {
+    try {
+      await http.post(
+        Uri.parse('$baseURL/work/book-a-work'),
+        headers: <String, String>{
+          'Authorization': '$tokenType $token',
+        },
+        body: {
+          "tags": "string",
+          'user_description': userDesc,
+          'scheduled_date': schedDate,
+          'scheduled_time': schedTime,
+          'assigned_to_id': assignedTo,
+          'profession_id': professionID,
+        },
+      );
+      return true;
+    } catch (e) {
+      throw Exception('Failed to schedule work: ok $e');
     }
   }
 }

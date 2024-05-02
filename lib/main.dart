@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/api_client.dart';
-import 'package:myapp/home_page.dart'; // Assuming you have a home page implementation
-import 'package:myapp/login_screen.dart';
-import 'package:myapp/profilepage.dart';
-import 'package:myapp/signup_screen.dart';
-import 'package:myapp/worker.dart'; // Assuming you have a worker page implementation
-import 'package:myapp/global_vars.dart';
+import 'package:NeighbourPro/api_client.dart';
+import 'package:NeighbourPro/home_page.dart'; // Assuming you have a home page implementation
+import 'package:NeighbourPro/login_screen.dart';
+import 'package:NeighbourPro/profilepage.dart';
+import 'package:NeighbourPro/signup_screen.dart';
+import 'package:NeighbourPro/worker.dart'; // Assuming you have a worker page implementation
+import 'package:NeighbourPro/global_vars.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Wait for widgets to initialize

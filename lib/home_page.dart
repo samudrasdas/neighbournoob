@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:myapp/api_client.dart'; // Import the API service
-import 'package:myapp/storage_service.dart'; 
 import 'package:carousel_slider/carousel_slider.dart'; // Import the carousel_slider package
-import 'package:myapp/professionals.dart';
+import 'package:NeighbourPro/api_client.dart'; // Import the API service
+import 'package:NeighbourPro/storage_service.dart'; 
+import 'package:NeighbourPro/professionals.dart';
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();

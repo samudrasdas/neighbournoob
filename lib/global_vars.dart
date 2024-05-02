@@ -1,4 +1,4 @@
-import 'package:myapp/storage_service.dart';
+import 'package:NeighbourPro/storage_service.dart';
 
 Future<Map<String, String?>> getGlobalToken() async {
   final storage = StorageService();

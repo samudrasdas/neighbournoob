@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:myapp/api_client.dart';
-import 'package:myapp/storage_service.dart';
+import 'package:NeighbourPro/api_client.dart';
+import 'package:NeighbourPro/storage_service.dart';
 // Import home_page.dart
 
 class LoginPage extends StatelessWidget {
