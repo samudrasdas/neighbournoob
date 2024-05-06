@@ -196,4 +196,20 @@ class APIService {
       throw Exception('Failed to schedule work: ok $e');
     }
   }
+  static Future<Map<String, dynamic>> fetchUserData(String token, String tokenType) async {
+  try {
+    final response = await http.get(
+      Uri.parse('$baseURL/auth/me'),
+      headers: {'Authorization': '$tokenType $token'},
+    );
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to fetch user data');
+    }
+  } catch (e) {
+    throw Exception('Error fetching user data: $e');
+  }
+}
+
 }
