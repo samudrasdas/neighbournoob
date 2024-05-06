@@ -4,10 +4,12 @@ import 'package:NeighbourPro/api_client.dart';
 import 'package:NeighbourPro/global_vars.dart';
 
 class ScheduleWorkPage extends StatefulWidget {
-  final int professionalId;
+  final int professionalID;
+  final int professionID;
 
   ScheduleWorkPage({
-    required this.professionalId,
+    required this.professionalID,
+    required this.professionID,
   });
 
   @override
@@ -114,26 +116,26 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage> {
                     final String date = _dateController.text;
                     final String time = _timeController.text;
                     final String description = _descriptionController.text;
+                    final int professionID = widget.professionID;
 
                     try {
                       await APIService.scheduleWork(
                         description,
                         date,
                         time,
-                        widget.professionalId,
-                        1,
-                        token,
+                        widget.professionalID,
+                        professionID,
                         tokenType,
+                        token,
                       );
                       Fluttertoast.showToast(
                         msg: 'Work scheduled successfully',
                       );
                       Navigator.of(context).pop();
                     } catch (e) {
-                      print(e);
-                      // Fluttertoast.showToast(
-                      //   msg: 'Failed to schedule work: $e',
-                      // );
+                      Fluttertoast.showToast(
+                        msg: 'Failed to schedule work: $e',
+                      );
                     }
                   }
                 },

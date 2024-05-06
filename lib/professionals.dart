@@ -83,6 +83,7 @@ class _ProfessionDetailPageState extends State<ProfessionDetailPage> {
                 MaterialPageRoute(
                   builder: (context) => WorkerDetailPage(
                     professional: professional,
+                    professionID: widget.professionId,
                   ),
                 ),
               );
@@ -132,14 +133,15 @@ class _ProfessionDetailPageState extends State<ProfessionDetailPage> {
 
 class WorkerDetailPage extends StatelessWidget {
   final Professional professional;
+  final int professionID;
 
-  WorkerDetailPage({required this.professional});
+  WorkerDetailPage({required this.professional, required this.professionID});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Worker Detail'),
+        title: Text('Worker Details'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,7 +212,7 @@ class WorkerDetailPage extends StatelessWidget {
             ),
           ),
           // Hire button
-          HireButton(professional: professional,),
+          HireButton(professional: professional, professionID: professionID),
         ],
       ),
     );
@@ -219,8 +221,9 @@ class WorkerDetailPage extends StatelessWidget {
 
 class HireButton extends StatelessWidget {
   final Professional professional;
+  final int professionID;
 
-  HireButton({required this.professional});
+  HireButton({required this.professional, required this.professionID});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -243,8 +246,10 @@ class HireButton extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    ScheduleWorkPage(professionalId: professional.id)), // Instantiate the confirmation page
+                builder: (context) => ScheduleWorkPage(
+                      professionalID: professional.id,
+                      professionID: professionID,
+                    )), // Instantiate the confirmation page
           );
         },
         child: Text(
