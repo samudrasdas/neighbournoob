@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:NeighbourPro/global_vars.dart';
+import 'package:NeighbourPro/api_client.dart';
+import 'package:NeighbourPro/address_page.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -31,97 +34,131 @@ class ProfileBody extends StatefulWidget {
 }
 
 class _ProfileBodyState extends State<ProfileBody> {
-  String username = "John";
-  String firstName = "John";
-  String lastName = "Abhraham";
-  String emailId = "john@gmail.com";
-  String profileStatus = "Worker";
+  String username = "";
+  String email = "";
 
-  void changeProfileStatus() {
-    setState(() {
-      if (profileStatus == "Worker") {
-        profileStatus = "Worker";
-      } else {
-        profileStatus = "Worker";
-      }
-    });
+  get changeProfileStatus => null;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    try {
+      // Step 1: Retrieve token and token type
+      final globalToken = await getGlobalToken();
+      final token = globalToken['token'];
+      final tokenType = globalToken['tokenType'];
+
+      // Step 2: Call API to fetch user data
+      final userData = await APIService.fetchUserDataFromApi(token, tokenType);
+
+      // Step 3: Update state with fetched user data
+      setState(() {
+        username = userData['username'];
+        email = userData['email'];
+      });
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
   }
 
   @override
-  Widget build(BuildContext context) {
-    // ignore: deprecated_member_use
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.pushReplacementNamed(context, '/home');
-        return false; // Prevent the default back navigation
-      },
-      child: Center(
-        child: Padding(
+Widget build(BuildContext context) {
+  return WillPopScope(
+    onWillPop: () async {
+      Navigator.pushReplacementNamed(context, '/home');
+      return false; // Prevent the default back navigation
+    },
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          alignment: Alignment.center,
+          child: Column(
+            children: [
+              SizedBox(height: 10), // Adjust the space between title and logo
+              Stack(
+                children: [
+                  Icon(
+                    Icons.circle,
+                    size: 140,
+                    color: const Color.fromARGB(255, 0, 0, 0),
+                  ),
+                  Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "NP",
+                        style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        Padding(
           padding: EdgeInsets.all(20.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(
-                padding: EdgeInsets.only(bottom: 30.0), // Adjust the value as needed
-                child: Container(
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                  child: Column(
-                    children: [
-                      Stack(
-                        children: [
-                          Icon(
-                            Icons.circle,
-                            size: 140,
-                            color: const Color.fromARGB(255, 0, 0, 0),
-                          ),
-                          Positioned.fill(
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                "NP",
-                                style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
               ProfileTextBox(label: 'Username', icon: Icons.person, text: username),
               SizedBox(height: 10.0),
-              ProfileTextBox(label: 'First Name', icon: Icons.person, text: firstName),
+              ProfileTextBox(label: 'Email ID', icon: Icons.email, text: email),
               SizedBox(height: 10.0),
-              ProfileTextBox(label: 'Last Name', icon: Icons.person, text: lastName),
-              SizedBox(height: 10.0),
-              ProfileTextBox(label: 'Email ID', icon: Icons.email, text: emailId),
-              SizedBox(height: 10.0),
-              Center(
-                child: SizedBox(
-                  width: 250, // Adjust the width as needed
-                  child: ElevatedButton(
-                    onPressed: changeProfileStatus,
-                    style: ElevatedButton.styleFrom(
-                      shape: const StadiumBorder(),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Color.fromARGB(255, 36, 30, 30),
-                    ),
-                    child: const Text(
-                      "Change to worker",
-                      style: TextStyle(fontSize: 20, color: Color.fromARGB(255, 230, 220, 220)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    width: 120, // Adjust the width as needed
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Navigate to the address page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AddressPage()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: const StadiumBorder(),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: Color.fromARGB(255, 145, 144, 144),
+                      ),
+                      child: const Text(
+                        "Add Address",
+                        style: TextStyle(fontSize: 14, color: Color.fromARGB(255, 0, 0, 0)),
+                      ),
                     ),
                   ),
-                ),
+                  SizedBox(
+                    width: 120, // Adjust the width as needed
+                    child: ElevatedButton(
+                      onPressed: changeProfileStatus,
+                      style: ElevatedButton.styleFrom(
+                        shape: const StadiumBorder(),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: Color.fromARGB(255, 99, 60, 60),
+                      ),
+                      child: const Text(
+                        "Change to Worker",
+                        style: TextStyle(fontSize: 14, color: Color.fromARGB(255, 0, 0, 0)),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
+      ],
+    ),
+  );
+}
 }
 
 class ProfileTextBox extends StatelessWidget {
