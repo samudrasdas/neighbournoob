@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
@@ -177,23 +178,27 @@ class APIService {
       String tokenType,
       String token) async {
     try {
-      await http.post(
+      final response = await http.post(
         Uri.parse('$baseURL/work/book-a-work'),
         headers: <String, String>{
           'Authorization': '$tokenType $token',
+          'Content-Type': 'application/json',
         },
-        body: {
-          "tags": "string",
+        body: jsonEncode(<String, dynamic>{
+          "tags": [],
           'user_description': userDesc,
           'scheduled_date': schedDate,
           'scheduled_time': schedTime,
           'assigned_to_id': assignedTo,
           'profession_id': professionID,
-        },
+        }),
       );
+      if (response.statusCode != 201) {
+        throw Exception(response.body);
+      }
       return true;
     } catch (e) {
-      throw Exception('Failed to schedule work: ok $e');
+      throw Exception('$e');
     }
   }
 }
