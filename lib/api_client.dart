@@ -201,4 +201,55 @@ class APIService {
       throw Exception('$e');
     }
   }
-}
+
+  static Future<Map<String, dynamic>> fetchUserDataFromApi(
+      String? token, String? tokenType) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseURL/auth/me'),
+        headers: {'Authorization': '$tokenType $token'},
+      );
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to fetch user data');
+      }
+    } catch (e) {
+      throw Exception('Error fetching user data: $e');
+    }
+  }
+
+  static Future<bool> addAddress(
+      String phoneNumber,
+      String houseName,
+      String street,
+      String city,
+      String state,
+      String pinCode,
+      String latitude,
+      String longitude,
+      String token,
+      String tokenType) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseURL/users/address'),
+        headers: <String, String>{'Authorization': '$tokenType $token'},
+        body: jsonEncode(<String, dynamic>{
+          'phone_number': phoneNumber,
+          'house_name': houseName,
+          'street': street,
+          'city': city,
+          'state': state,
+          'pin_code': pinCode,
+          'latitude': latitude,
+          'longitude': longitude,
+        }),
+      );
+      if (response.statusCode != 201) {
+        throw Exception('Failed to add address');
+      }
+      return true;
+  }catch(e){
+    throw Exception('Error adding address: $e');
+  }
+}}
