@@ -1,17 +1,5 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: AddressPage(),
-    );
-  }
-}
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 
 class AddressPage extends StatefulWidget {
   @override
@@ -19,25 +7,18 @@ class AddressPage extends StatefulWidget {
 }
 
 class _AddressPageState extends State<AddressPage> {
-  // Define text controllers for each text field
-  final TextEditingController phoneNumberController = TextEditingController();
-  final TextEditingController houseNameController = TextEditingController();
-  final TextEditingController streetController = TextEditingController();
-  final TextEditingController cityController = TextEditingController();
-  final TextEditingController stateController = TextEditingController();
-  final TextEditingController pincodeController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController houseNameController = TextEditingController();
+  TextEditingController streetNameController = TextEditingController();
+  TextEditingController cityNameController = TextEditingController();
+  TextEditingController pinCodeController = TextEditingController();
+  TextEditingController stateNameController = TextEditingController();
 
-  @override
-  void dispose() {
-    // Clean up controllers when the widget is disposed
-    phoneNumberController.dispose();
-    houseNameController.dispose();
-    streetController.dispose();
-    cityController.dispose();
-    stateController.dispose();
-    pincodeController.dispose();
-    super.dispose();
-  }
+  final controller = MapController.withUserPosition(
+      trackUserLocation: UserTrackingOption(
+    enableTracking: true,
+    unFollowUser: false,
+  ));
 
   @override
   Widget build(BuildContext context) {
@@ -46,84 +27,129 @@ class _AddressPageState extends State<AddressPage> {
         title: Text('Add Address'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextBox(
-              label: 'Phone Number',
-              keyboardType: TextInputType.phone,
-              controller: phoneNumberController,
-            ),
             SizedBox(height: 20.0),
-            TextBox(
-              label: 'House Name',
+            TextField(
               controller: houseNameController,
+              decoration: InputDecoration(
+                labelText: 'House Name',
+                border: OutlineInputBorder(),
+              ),
             ),
             SizedBox(height: 20.0),
-            TextBox(
-              label: 'Street',
-              controller: streetController,
+            TextField(
+              controller: streetNameController,
+              decoration: InputDecoration(
+                labelText: 'Street Name',
+                border: OutlineInputBorder(),
+              ),
             ),
             SizedBox(height: 20.0),
-            TextBox(
-              label: 'City',
-              controller: cityController,
+            TextField(
+              controller: cityNameController,
+              decoration: InputDecoration(
+                labelText: 'City',
+                border: OutlineInputBorder(),
+              ),
             ),
             SizedBox(height: 20.0),
-            TextBox(
-              label: 'State',
-              controller: stateController,
+            // state
+            TextField(
+              controller: stateNameController,
+              decoration: InputDecoration(
+                labelText: 'State',
+                border: OutlineInputBorder(),
+              ),
             ),
             SizedBox(height: 20.0),
-            TextBox(
-              label: 'Pincode',
-              keyboardType: TextInputType.number,
-              controller: pincodeController,
+            TextField(
+              controller: pinCodeController,
+              decoration: InputDecoration(
+                labelText: 'Pin Code',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 0.0), // Remove extra spacing
+            TextField(
+              controller: phoneNumberController,
+              decoration: InputDecoration(
+                labelText: 'Phone Number',
+                border: OutlineInputBorder(),
+              ),
+            ),
+
+            SizedBox(height: 20.0),
+            ElevatedButton(
+              onPressed: () {
+                // Implement saving address logic here
+                String phoneNumber = phoneNumberController.text;
+                String houseName = houseNameController.text;
+                String streetName = streetNameController.text;
+                String pinCode = pinCodeController.text;
+
+                // You can use these values to save the address
+              },
+              child: Text('Save Address'),
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                // Access text from controllers
-                final phoneNumber = phoneNumberController.text;
-                final houseName = houseNameController.text;
-                final street = streetController.text;
-                final city = cityController.text;
-                final state = stateController.text;
-                final pincode = pincodeController.text;
-
-                // Add functionality to save address
-                // You can use the text obtained from the controllers here to make API calls or perform any other actions.
+                // Implement logic to choose address on map
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OSMFlutter( 
+        controller: controller,
+        osmOption: OSMOption(
+              userTrackingOption: UserTrackingOption(
+              enableTracking: true,
+              unFollowUser: false,
+            ),
+            zoomOption: ZoomOption(
+                  initZoom: 8,
+                  minZoomLevel: 3,
+                  maxZoomLevel: 19,
+                  stepZoom: 1.0,
+            ),
+            userLocationMarker: UserLocationMaker(
+                personMarker: MarkerIcon(
+                    icon: Icon(
+                        Icons.location_history_rounded,
+                        color: Colors.red,
+                        size: 48,
+                    ),
+                ),
+                directionArrowMarker: MarkerIcon(
+                    icon: Icon(
+                        Icons.double_arrow,
+                        size: 48,
+                    ),
+                ),
+            ),
+            roadConfiguration: RoadOption(
+                    roadColor: Colors.yellowAccent,
+            ),
+            markerOption: MarkerOption(
+                defaultMarker: MarkerIcon(
+                    icon: Icon(
+                      Icons.person_pin_circle,
+                      color: Colors.blue,
+                      size: 56,
+                    ),
+                )
+            ),
+        )
+    ),
+                  ),
+                );
               },
-              child: Text('Save Address'),
+              child: Text('Choose on map'),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class TextBox extends StatelessWidget {
-  final String label;
-  final TextInputType keyboardType;
-  final TextEditingController controller; // Add controller property
-
-  const TextBox({
-    Key? key,
-    required this.label,
-    this.keyboardType = TextInputType.text,
-    required this.controller, // Required controller parameter
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      keyboardType: keyboardType,
-      controller: controller, // Assign the provided controller
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(),
       ),
     );
   }
