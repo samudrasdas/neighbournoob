@@ -43,9 +43,45 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage> {
     );
     if (pickedTime != null) {
       setState(() {
-        _timeController.text = pickedTime.format(context);
+        // Convert the picked time to 24-hour format
+        final String formattedTime =
+            _formatTimeTo24Hours(pickedTime.hour, pickedTime.minute);
+        _timeController.text = formattedTime;
       });
     }
+  }
+
+  String _formatTimeTo24Hours(int hour, int minute) {
+    String period = 'AM';
+    if (hour >= 12) {
+      period = 'PM';
+      hour = hour - 12;
+    }
+    if (hour == 0) {
+      hour = 12;
+    }
+    String hourStr = hour < 10 ? '0$hour' : '$hour';
+    String minuteStr = minute < 10 ? '0$minute' : '$minute';
+    return '$hourStr:$minuteStr $period';
+  }
+
+  String _convertTo24Hour(String time) {
+    final List<String> parts = time.split(' ');
+    final String hourMinute = parts[0];
+    final String period = parts[1];
+    final List<String> hourMinuteParts = hourMinute.split(':');
+    int hour = int.parse(hourMinuteParts[0]);
+    final int minute = int.parse(hourMinuteParts[1]);
+    
+    if (period.toUpperCase() == 'PM' && hour != 12) {
+      hour += 12;
+    } else if (period.toUpperCase() == 'AM' && hour == 12) {
+      hour = 0;
+    }
+
+    final String hourStr = hour < 10 ? '0$hour' : '$hour';
+    final String minuteStr = minute < 10 ? '0$minute' : '$minute';
+    return '$hourStr:$minuteStr';
   }
 
   @override
@@ -70,6 +106,10 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage> {
                     onPressed: () => _selectDate(context),
                     icon: Icon(Icons.calendar_today),
                   ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -78,6 +118,7 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage> {
                   return null;
                 },
               ),
+              SizedBox(height: 20),
               TextFormField(
                 controller: _timeController,
                 readOnly: true, // Make the field read-only
@@ -87,6 +128,10 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage> {
                     onPressed: () => _selectTime(context),
                     icon: Icon(Icons.access_time),
                   ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -95,9 +140,16 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage> {
                   return null;
                 },
               ),
+              SizedBox(height: 20),
               TextFormField(
                 controller: _descriptionController,
-                decoration: InputDecoration(labelText: 'Description'),
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a description';
@@ -114,7 +166,7 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage> {
                     String tokenType = tokenData['tokenType'] as String;
 
                     final String date = _dateController.text;
-                    final String time = _timeController.text;
+                    final String time = _convertTo24Hour(_timeController.text); // Convert time to 24-hour format
                     final String description = _descriptionController.text;
                     final int professionID = widget.professionID;
 
@@ -159,38 +211,3 @@ class _ScheduleWorkPageState extends State<ScheduleWorkPage> {
     );
   }
 }
-
-
-
-
-
-
-// ###################### Keep for confirmation page #################################################
-// class ConfirmationPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Confirmation'),
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             Icon(
-//               Icons.check_circle,
-//               size: 100,
-//               color: Colors.green,
-//             ),
-//             SizedBox(height: 20),
-//             Text(
-//               'Your hiring request has been confirmed!',
-//               style: TextStyle(fontSize: 20),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-// ####################################################################################################

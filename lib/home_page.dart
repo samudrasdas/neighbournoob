@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:carousel_slider/carousel_slider.dart'; // Import the carousel_slider package
-import 'package:NeighbourPro/api_client.dart'; // Import the API service
-import 'package:NeighbourPro/storage_service.dart'; 
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:NeighbourPro/api_client.dart';
+import 'package:NeighbourPro/storage_service.dart';
 import 'package:NeighbourPro/professionals.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -37,7 +38,6 @@ class _HomePageState extends State<HomePage> {
     try {
       final List<String> professions =
           await APIService.fetchRecommendedProfessions();
-      // print('Recommended Professions: $professions');
       setState(() {
         recommendedProfessions = professions;
       });
@@ -102,14 +102,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                // Text(
-                //   'Recommended for You',
-                //   style: TextStyle(
-                //     fontWeight: FontWeight.normal,
-                //     fontSize: 20,
-                //     color: Colors.black,
-                //   ),
-                // ),
                 SizedBox(height: 22),
                 recommendedProfessions.isNotEmpty
                     ? CarouselSlider(
@@ -164,37 +156,44 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          Expanded(
-            child: Container(
-              color: const Color.fromARGB(255, 255, 255, 255),
-              padding: EdgeInsets.all(16.0),
-              child: GridView.count(
-                shrinkWrap: true,
-                crossAxisCount: 2,
-                children: [
-                  for (final profession in allProfessions)
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProfessionDetailPage(
-                              professionName: profession.name,
-                              professionId: profession.id,
+          if (recommendedProfessions.isEmpty || allProfessions.isEmpty)
+            Expanded(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          else
+            Expanded(
+              child: Container(
+                color: const Color.fromARGB(255, 255, 255, 255),
+                padding: EdgeInsets.all(16.0),
+                child: GridView.count(
+                  shrinkWrap: true,
+                  crossAxisCount: 2,
+                  children: [
+                    for (final profession in allProfessions)
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfessionDetailPage(
+                                professionName: profession.name,
+                                professionId: profession.id,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      child: ProfessionCard(
-                        id: profession.id,
-                        title: profession.name,
-                        icon: Icons.work,
+                          );
+                        },
+                        child: ProfessionCard(
+                          id: profession.id,
+                          title: profession.name,
+                          icon: Icons.work,
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
       bottomNavigationBar: Material(

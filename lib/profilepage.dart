@@ -3,12 +3,6 @@ import 'package:NeighbourPro/global_vars.dart';
 import 'package:NeighbourPro/api_client.dart';
 import 'package:NeighbourPro/address_page.dart';
 
-void main() {
-  runApp(MaterialApp(
-    home: ProfilePage(),
-  ));
-}
-
 class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
