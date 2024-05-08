@@ -233,23 +233,27 @@ class APIService {
     try {
       final response = await http.post(
         Uri.parse('$baseURL/users/address'),
-        headers: <String, String>{'Authorization': '$tokenType $token'},
+        headers: <String, String>{
+          'Authorization': '$tokenType $token',
+          'Content-Type': 'application/json'
+        },
         body: jsonEncode(<String, dynamic>{
-          'phone_number': phoneNumber,
           'house_name': houseName,
           'street': street,
           'city': city,
           'state': state,
-          'pin_code': pinCode,
+          'pincode': pinCode,
+          'phone_number': phoneNumber,
           'latitude': latitude,
           'longitude': longitude,
         }),
       );
-      if (response.statusCode != 201) {
-        throw Exception('Failed to add address');
+      if (response.statusCode != 200) {
+        throw Exception('Failed to add address: ${json.decode(response.body)}');
       }
       return true;
-  }catch(e){
-    throw Exception('Error adding address: $e');
+    } catch (e) {
+      throw Exception('Error adding address: $e');
+    }
   }
-}}
+}
