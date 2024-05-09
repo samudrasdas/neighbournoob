@@ -33,7 +33,8 @@ class _AssignedWorksBodyState extends State<AssignedWorksBody> {
     String token = tokenData['token'] as String;
     String tokenType = tokenData['tokenType'] as String;
     try {
-      final List<Works> works = await APIService.fetchAssignedWorks(token, tokenType);
+      final List<Works> works =
+          await APIService.fetchAssignedWorks(token, tokenType);
       setState(() {
         assignedWorks = works;
       });
@@ -68,7 +69,8 @@ class _AssignedWorksBodyState extends State<AssignedWorksBody> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => WorkDetailsPage(work: assignedWorks[index]),
+                    builder: (context) =>
+                        WorkDetailsPage(work: assignedWorks[index]),
                   ),
                 );
               },
@@ -134,6 +136,68 @@ class WorkDetailsPage extends StatelessWidget {
               work.status,
               style: TextStyle(fontSize: 16),
             ),
+            SizedBox(height: 16),
+            if (work.status == 'pending') ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // Implement accept logic
+                    },
+                    child: Text('Accept'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Implement accept and start now logic
+                    },
+                    child: Text('Accept and Start Now'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Confirm cancellation"),
+                            content:
+                                Text("Do you need to cancel this booking?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(); // Close the dialog
+                                },
+                                child: Text(
+                                  "Go back",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Implement cancel logic
+                                  // This could involve calling a function to cancel the booking
+                                  // and navigating back to the previous page
+                                  Navigator.of(context)
+                                      .pop(); // Close the dialog
+                                },
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.red),
+                                ),
+                                child: Text("Decline"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: Text('Decline'),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
