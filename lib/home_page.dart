@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:NeighbourPro/api_client.dart';
 import 'package:NeighbourPro/storage_service.dart';
 import 'package:NeighbourPro/professionals.dart';
+import 'package:NeighbourPro/global_vars.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -15,12 +16,14 @@ final storage = StorageService();
 class _HomePageState extends State<HomePage> {
   List<String> recommendedProfessions = [];
   List<Profession> allProfessions = [];
+  String role = "";
 
   @override
   void initState() {
     super.initState();
     fetchRecommendedProfessions();
     fetchProfessions();
+    fetchUserData();
   }
 
   Future<void> fetchProfessions() async {
@@ -31,6 +34,25 @@ class _HomePageState extends State<HomePage> {
       });
     } catch (e) {
       print('Error fetching professions: $e');
+    }
+  }
+
+  Future<void> fetchUserData() async {
+    try {
+      // Step 1: Retrieve token and token type
+      final globalToken = await getGlobalToken();
+      final token = globalToken['token'];
+      final tokenType = globalToken['tokenType'];
+
+      // Step 2: Call API to fetch user data
+      final userData = await APIService.fetchUserDataFromApi(token, tokenType);
+
+      // Step 3: Update state with fetched user data
+      setState(() {
+        role = userData['role'];
+      });
+    } catch (e) {
+      print('Error fetching user data: $e');
     }
   }
 
@@ -75,7 +97,7 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(Icons.person),
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/profile');
+              Navigator.pushNamed(context, '/profile');
             },
           ),
         ],
@@ -122,7 +144,8 @@ class _HomePageState extends State<HomePage> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
-                                      color: const Color.fromARGB(255, 238, 237, 237),
+                                      color: const Color.fromARGB(
+                                          255, 238, 237, 237),
                                       fontStyle: FontStyle.normal,
                                     ),
                                   ),
@@ -132,16 +155,16 @@ class _HomePageState extends State<HomePage> {
                           );
                         }).toList(),
                         options: CarouselOptions(
-                          height: 150,
-                          autoPlay: true,
-                          autoPlayInterval: Duration(seconds: 3),
-                          autoPlayAnimationDuration: Duration(milliseconds: 800),
-                          autoPlayCurve: Curves.fastOutSlowIn,
-                          pauseAutoPlayOnTouch: true,
-                          enlargeCenterPage: true,
-                          scrollDirection: Axis.horizontal,
-                          viewportFraction: 0.8
-                        ),
+                            height: 150,
+                            autoPlay: true,
+                            autoPlayInterval: Duration(seconds: 3),
+                            autoPlayAnimationDuration:
+                                Duration(milliseconds: 800),
+                            autoPlayCurve: Curves.fastOutSlowIn,
+                            pauseAutoPlayOnTouch: true,
+                            enlargeCenterPage: true,
+                            scrollDirection: Axis.horizontal,
+                            viewportFraction: 0.8),
                       )
                     : Text(
                         'You can search for friendly neighbourhood professionals',
@@ -199,7 +222,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: Material(
         elevation: 18, // Elevation for shadow effect
         shadowColor: Colors.grey, // Shadow color
-        child: CustomBottomNavigationBar(),
+        child: CustomBottomNavigationBar(role: role,),
       ),
     );
   }
@@ -238,7 +261,8 @@ class ProfessionCard extends StatelessWidget {
   final String title;
   final IconData icon;
 
-  const ProfessionCard({required this.id, required this.title, required this.icon});
+  const ProfessionCard(
+      {required this.id, required this.title, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -268,6 +292,10 @@ class ProfessionCard extends StatelessWidget {
 }
 
 class CustomBottomNavigationBar extends StatelessWidget {
+  final String role;
+
+  const CustomBottomNavigationBar({required this.role});
+
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
@@ -283,12 +311,20 @@ class CustomBottomNavigationBar extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: Icon(Icons.work),
+            icon: Icon(Icons.history),
             color: Colors.black,
             onPressed: () {
-              print('Worker icon pressed');
+              print('history icon pressed');
             },
           ),
+          if (role == 'worker')
+            IconButton(
+              icon: Icon(Icons.work),
+              color: Colors.black,
+              onPressed: () {
+                Navigator.pushNamed(context, '/worker');
+              },
+            ),
         ],
       ),
     );

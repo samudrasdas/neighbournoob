@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:NeighbourPro/global_vars.dart';
 import 'package:NeighbourPro/api_client.dart';
 import 'package:NeighbourPro/address_page.dart';
+import 'package:NeighbourPro/storage_service.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -27,11 +29,12 @@ class ProfileBody extends StatefulWidget {
   _ProfileBodyState createState() => _ProfileBodyState();
 }
 
+final storage = StorageService();
+
 class _ProfileBodyState extends State<ProfileBody> {
   String username = "";
   String email = "";
-
-  get changeProfileStatus => null;
+  String role = "";
 
   @override
   void initState() {
@@ -53,6 +56,7 @@ class _ProfileBodyState extends State<ProfileBody> {
       setState(() {
         username = userData['username'];
         email = userData['email'];
+        role = userData['role'];
       });
     } catch (e) {
       print('Error fetching user data: $e');
@@ -60,99 +64,91 @@ class _ProfileBodyState extends State<ProfileBody> {
   }
 
   @override
-Widget build(BuildContext context) {
-  return WillPopScope(
-    onWillPop: () async {
-      Navigator.pushReplacementNamed(context, '/home');
-      return false; // Prevent the default back navigation
-    },
-    child: Column(
+  Widget build(BuildContext context) {
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          alignment: Alignment.center,
-          child: Column(
-            children: [
-              SizedBox(height: 10), // Adjust the space between title and logo
-              Stack(
-                children: [
-                  Icon(
-                    Icons.circle,
-                    size: 140,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                  ),
-                  Positioned.fill(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "NP",
-                        style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
+        SizedBox(height: 20),
+        Stack(
+          children: [
+            CircleAvatar(
+              radius: 70,
+              backgroundColor: Colors.black,
+              child: Text(
+                "NP",
+                style: TextStyle(
+                    fontSize: 48,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+        SizedBox(height: 20),
         Padding(
-          padding: EdgeInsets.all(20.0),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ProfileTextBox(label: 'Username', icon: Icons.person, text: username),
+              ProfileTextBox(
+                  label: 'Username', icon: Icons.person, text: username),
               SizedBox(height: 10.0),
               ProfileTextBox(label: 'Email ID', icon: Icons.email, text: email),
-              SizedBox(height: 10.0),
+              SizedBox(height: 20.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  SizedBox(
-                    width: 120, // Adjust the width as needed
-                    child: ElevatedButton(
+                  ElevatedButton(
+                    onPressed: () {
+                      // Navigate to the address page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AddressPage()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      "Add Address",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  if (role == 'user') // Check if role is 'user'
+                    ElevatedButton(
                       onPressed: () {
-                        // Navigate to the address page
+                        // Navigate to the worker page
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => AddressPage()),
+                          MaterialPageRoute(
+                            builder: (context) => SwitchToWorkerPage(),
+                          ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: Color.fromARGB(255, 145, 144, 144),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        // primary: Colors.white,
                       ),
-                      child: const Text(
-                        "Add Address",
-                        style: TextStyle(fontSize: 14, color: Color.fromARGB(255, 0, 0, 0)),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 120, // Adjust the width as needed
-                    child: ElevatedButton(
-                      onPressed: changeProfileStatus,
-                      style: ElevatedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: Color.fromARGB(255, 99, 60, 60),
-                      ),
-                      child: const Text(
+                      child: Text(
                         "Change to Worker",
-                        style: TextStyle(fontSize: 14, color: Color.fromARGB(255, 0, 0, 0)),
+                        style: TextStyle(fontSize: 16, color: Colors.black),
                       ),
                     ),
-                  ),
                 ],
               ),
             ],
           ),
         ),
       ],
-    ),
-  );
-}
+    );
+  }
 }
 
 class ProfileTextBox extends StatelessWidget {
@@ -160,42 +156,189 @@ class ProfileTextBox extends StatelessWidget {
   final String label;
   final String text;
 
-  const ProfileTextBox({Key? key, required this.label, required this.icon, required this.text}) : super(key: key);
+  const ProfileTextBox(
+      {Key? key, required this.label, required this.icon, required this.text})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon),
-              SizedBox(width: 10.0),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon),
+            SizedBox(width: 10.0),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 5.0),
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            color: Colors.grey[200],
+          ),
+          child: Text(
+            text,
+            style: TextStyle(fontSize: 18.0),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SwitchToWorkerPage extends StatefulWidget {
+  @override
+  _SwitchToWorkerPageState createState() => _SwitchToWorkerPageState();
+}
+
+class _SwitchToWorkerPageState extends State<SwitchToWorkerPage> {
+  List<Profession> allProfessions = [];
+  Profession? selectedProfession;
+  String workerBio = '';
+  double hourlyRate = 0.0;
+  String token = '';
+  String tokenType = '';
+
+  Future<void> fetchProfessions() async {
+    Map<String, String?> tokenData = await getGlobalToken();
+    token = tokenData['token'] as String;
+    tokenType = tokenData['tokenType'] as String;
+    try {
+      final List<Profession> professions = await APIService.fetchProfessions();
+      setState(() {
+        allProfessions = professions;
+      });
+    } catch (e) {
+      print('Error fetching professions: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProfessions();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Worker Page'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 10),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(width: 1.0, color: Colors.black),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: SingleChildScrollView(
+                child: DropdownButton<Profession>(
+                  value: selectedProfession,
+                  items: allProfessions.map((Profession profession) {
+                    return DropdownMenuItem<Profession>(
+                      value: profession,
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0), // Add padding here
+                        child: Text(
+                          profession.name,
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (Profession? newValue) {
+                    setState(() {
+                      selectedProfession = newValue;
+                    });
+                  },
+                  hint: Padding(
+                    padding: EdgeInsets.all(8.0), // Add padding here
+                    child: Text(
+                      'Select a profession',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  isExpanded: true,
+                  elevation: 2,
+                  underline: Container(
+                    height: 0,
+                  ),
+                  // Limit the height of the dropdown
+                  itemHeight: 50,
                 ),
               ),
-            ],
-          ),
-          SizedBox(height: 5.0),
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.0),
-              color: Colors.grey[200],
             ),
-            child: Text(
-              text,
-              style: TextStyle(fontSize: 18.0),
+            SizedBox(height: 20),
+            TextField(
+              onChanged: (value) {
+                setState(() {
+                  workerBio = value;
+                });
+              },
+              decoration: InputDecoration(
+                labelText: 'Worker Bio',
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 3,
+              style: TextStyle(fontSize: 16),
             ),
-          ),
-        ],
+            SizedBox(height: 20),
+            TextField(
+              onChanged: (value) {
+                setState(() {
+                  hourlyRate = double.tryParse(value) ?? 0.0;
+                });
+              },
+              decoration: InputDecoration(
+                labelText: 'Hourly Rate',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  try {
+                    await APIService.switchToProfessional(token, tokenType,
+                        selectedProfession!.id, workerBio, hourlyRate);
+                    Fluttertoast.showToast(msg: 'Switched to worker, please log back in');
+                    storage.deleteToken();
+                    Navigator.pushReplacementNamed(context, '/login');
+                  } catch (e) {
+                    Fluttertoast.showToast(msg: '$e');
+                  }
+                },
+                child: Text(
+                  'Apply',
+                  style: TextStyle(fontSize: 16),
+                ),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
