@@ -27,14 +27,14 @@ class _AddressPageState extends State<AddressPage> {
     String tokenType = tokenData['tokenType'] as String;
     try {
       await APIService.addAddress(
-        phoneController.text,
-        houseController.text,
-        streetController.text,
-        cityController.text,
-        stateController.text,
-        pinCodeController.text,
-        latitudeController.text,
-        longitudeController.text,
+        phoneController.text.trim(),
+        houseController.text.trim(),
+        streetController.text.trim(),
+        cityController.text.trim(),
+        stateController.text.trim(),
+        pinCodeController.text.trim(),
+        latitudeController.text.trim(),
+        longitudeController.text.trim(),
         token,
         tokenType,
       );

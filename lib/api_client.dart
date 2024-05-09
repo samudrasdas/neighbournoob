@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,6 +12,29 @@ class Profession {
 
   factory Profession.fromJson(Map<String, dynamic> json) {
     return Profession(json['name'] as String, json['id'] as int);
+  }
+}
+
+class Works {
+  final int id;
+  final String userDescription;
+  final String scheduledDate;
+  final String scheduledTime;
+  final int professionID;
+  final String status;
+
+  Works(this.id, this.userDescription, this.scheduledDate, this.scheduledTime,
+      this.professionID, this.status);
+
+  factory Works.fromJson(Map<String, dynamic> json) {
+    return Works(
+      json['id'] as int,
+      json['user_description'] as String,
+      json['scheduled_date'] as String,
+      json['scheduled_time'] as String,
+      json['profession_id'] as int,
+      json['status'] as String,
+    );
   }
 }
 
@@ -107,6 +129,26 @@ class APIService {
       return data.map((item) => Profession.fromJson(item)).toList();
     } else {
       throw Exception('Failed to load professions');
+    }
+  }
+
+  static Future<List<Works>> fetchAssignedWorks(
+      String token, String tokenType) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseURL/work/assigned-works'),
+        headers: <String, String>{
+          'Authorization': '$tokenType $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as List;
+        return data.map((item) => Works.fromJson(item)).toList();
+      } else {
+        throw Exception('Failed to fetch assigned works: ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching assigned works: $e');
     }
   }
 
@@ -216,6 +258,30 @@ class APIService {
       }
     } catch (e) {
       throw Exception('Error fetching user data: $e');
+    }
+  }
+
+  static Future<bool> switchToProfessional(String token, String tokenType,
+      int professionID, String workerBio, double hourlyRate) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$baseURL/users/switch-to-professional'),
+        headers: <String, String>{
+          'Authorization': '$tokenType $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'profession_id': professionID,
+          'worker_bio': workerBio,
+          'hourly_rate': hourlyRate,
+        }),
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to switch to professional ${response.body}');
+      }
+      return true;
+    } catch (e) {
+      throw Exception('Error switching to professional: $e');
     }
   }
 

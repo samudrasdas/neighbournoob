@@ -1,126 +1,141 @@
 import 'package:flutter/material.dart';
+import 'package:NeighbourPro/api_client.dart';
+import 'package:NeighbourPro/global_vars.dart';
 
-// Define a class to represent a notification
-class NotificationItem {
-  final String title;
-  final String message;
-  final DateTime time;
-
-  NotificationItem({required this.title, required this.message, required this.time});
-}
-
-// Define a class to represent a work booking
-class WorkBooking {
-  final String clientName;
-  final DateTime startTime;
-  final DateTime endTime;
-
-  WorkBooking({required this.clientName, required this.startTime, required this.endTime});
-}
-
-// Sample data of notifications
-List<NotificationItem> notifications = [
-  NotificationItem(
-    title: 'New Booking',
-    message: 'You have a new appointment at 10:00 AM tomorrow.',
-    time: DateTime.now().subtract(Duration(hours: 2)),
-  ),
-  NotificationItem(
-    title: 'Reminder',
-    message: 'Reminder: Your appointment is in 1 hour.',
-    time: DateTime.now().subtract(Duration(minutes: 30)),
-  ),
-  NotificationItem(
-    title: 'Cancelled Appointment',
-    message: 'Your appointment at 3:00 PM has been cancelled.',
-    time: DateTime.now().subtract(Duration(days: 1)),
-  ),
-];
-
-// Sample data of work bookings
-List<WorkBooking> workBookings = [
-  WorkBooking(
-    clientName: 'John Doe',
-    startTime: DateTime.now().add(Duration(hours: 1)),
-    endTime: DateTime.now().add(Duration(hours: 3)),
-  ),
-  WorkBooking(
-    clientName: 'Alice Smith',
-    startTime: DateTime.now().add(Duration(days: 1)),
-    endTime: DateTime.now().add(Duration(days: 1, hours: 2)),
-  ),
-];
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Worker Page',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: WorkerPage(),
-    );
-  }
-}
-
-class WorkerPage extends StatelessWidget {
+class AssignedWorksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Worker Page'),
+        title: Text('Assigned Works'),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Notifications',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: notifications.length,
-              itemBuilder: (context, index) {
-                var notification = notifications[index];
-                return ListTile(
-                  title: Text(notification.title),
-                  subtitle: Text(notification.message),
-                  trailing: Text(
-                    '${notification.time.hour.toString().padLeft(2, '0')}:${notification.time.minute.toString().padLeft(2, '0')}',
+      body: AssignedWorksBody(),
+    );
+  }
+}
+
+class AssignedWorksBody extends StatefulWidget {
+  @override
+  _AssignedWorksBodyState createState() => _AssignedWorksBodyState();
+}
+
+class _AssignedWorksBodyState extends State<AssignedWorksBody> {
+  List<Works> assignedWorks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAssignedWorks();
+  }
+
+  Future<void> fetchAssignedWorks() async {
+    Map<String, String?> tokenData = await getGlobalToken();
+    String token = tokenData['token'] as String;
+    String tokenType = tokenData['tokenType'] as String;
+    try {
+      final List<Works> works = await APIService.fetchAssignedWorks(token, tokenType);
+      setState(() {
+        assignedWorks = works;
+      });
+    } catch (e) {
+      print('Error fetching assigned works: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: assignedWorks.length,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          child: Card(
+            elevation: 3,
+            child: ListTile(
+              title: Text(
+                assignedWorks[index].userDescription.trim(),
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                'Scheduled: ${assignedWorks[index].scheduledTime.substring(0, 5)} | Status: ${assignedWorks[index].status}',
+                style: TextStyle(color: Colors.grey),
+              ),
+              trailing: Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.grey,
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WorkDetailsPage(work: assignedWorks[index]),
                   ),
                 );
               },
             ),
           ),
-          Divider(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Work Bookings',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        );
+      },
+    );
+  }
+}
+
+class WorkDetailsPage extends StatelessWidget {
+  final Works work;
+
+  WorkDetailsPage({required this.work});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Work Details'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'User Description:',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: workBookings.length,
-              itemBuilder: (context, index) {
-                var booking = workBookings[index];
-                return ListTile(
-                  title: Text('Client: ${booking.clientName}'),
-                  subtitle: Text('Time: ${booking.startTime.hour.toString().padLeft(2, '0')}:${booking.startTime.minute.toString().padLeft(2, '0')} - ${booking.endTime.hour.toString().padLeft(2, '0')}:${booking.endTime.minute.toString().padLeft(2, '0')}'),
-                );
-              },
+            SizedBox(height: 8),
+            Text(
+              work.userDescription,
+              style: TextStyle(fontSize: 16),
             ),
-          ),
-        ],
+            SizedBox(height: 16),
+            Text(
+              'Scheduled Date:',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              '${work.scheduledDate} ${work.scheduledTime.substring(0, 5)}',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Status:',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              work.status,
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
       ),
     );
   }
