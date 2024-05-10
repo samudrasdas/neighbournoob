@@ -86,6 +86,19 @@ class WorkDetailsPage extends StatelessWidget {
   final Works work;
 
   WorkDetailsPage({required this.work});
+  Future<bool> acceptWork() async {
+    Map<String, String?> tokenData = await getGlobalToken();
+    String token = tokenData['token'] as String;
+    String tokenType = tokenData['tokenType'] as String;
+    try {
+      final bool accepted =
+          await APIService.acceptWork(work.id, token, tokenType);
+     return accepted;
+    } catch (e) {
+      print('error in accepting work: $e');
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,8 +155,22 @@ class WorkDetailsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      // Implement accept logic
+                    onPressed: () async {
+                      // Call acceptWork function from API
+                      try {
+                        final bool accepted = await acceptWork();
+                        if (accepted) {
+                          // Work accepted successfully
+                          // You can perform further actions such as navigation or UI updates
+                          print('Work accepted successfully');
+                        } else {
+                          // Handle case when work was not accepted
+                          print('Work was not accepted');
+                        }
+                      } catch (e) {
+                        // Handle API call error
+                        print('Error accepting work: $e');
+                      }
                     },
                     child: Text('Accept'),
                   ),

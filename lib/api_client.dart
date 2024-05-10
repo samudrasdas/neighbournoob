@@ -322,4 +322,18 @@ class APIService {
       throw Exception('Error adding address: $e');
     }
   }
+
+  static Future<bool> acceptWork(int id, String token,String tokenType) async {
+    final response = await http.post(
+      Uri.parse('$baseURL/work/accept-work/$id'),
+      headers: <String, String>{
+        'Authorization': '$tokenType $token',
+      },
+    );
+    if (response.statusCode == 200) {
+      return true; // Work accepted successfully
+    } else {
+      throw Exception('Failed to accept work: ${response.statusCode}');
+    }
+  }
 }
