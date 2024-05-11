@@ -122,7 +122,7 @@ class WorkDetailsPage extends StatelessWidget {
   }
   static void launchGoogleMaps(latitude,longitude,{LaunchMode linkLaunchMode = LaunchMode.externalApplication}) async {
     // Construct the URL with the specified latitude and longitude
-  var url = Uri.parse('https://www.google.com/maps/dir/?api=1&query=${latitude},${longitude}');
+  var url = Uri.parse('https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}');
 
     // Check if the URL can be launched
 
