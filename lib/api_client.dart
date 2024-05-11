@@ -212,9 +212,13 @@ class APIService {
     }
   }
 
-  static Future<List<String>> fetchRecommendedProfessions() async {
+      
+  static Future<List<String>> fetchRecommendedProfessions(String token, String tokenType) async {
     try {
-      final response = await http.get(Uri.parse('$baseURL/users/recommend'));
+      final response = await http.get(Uri.parse('$baseURL/users/recommend'),
+        headers: <String, String>{
+          'Authorization': '$tokenType $token',
+        },);
       if (response.statusCode == 200) {
         final dynamic data = jsonDecode(response.body);
         final List<dynamic> recommendations = data['recommendations'];

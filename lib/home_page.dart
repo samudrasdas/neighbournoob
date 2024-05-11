@@ -58,8 +58,11 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchRecommendedProfessions() async {
     try {
+      Map<String, dynamic> globalToken = await getGlobalToken();
+      final token = globalToken['token'];
+      final tokenType = globalToken['tokenType'];
       final List<String> professions =
-          await APIService.fetchRecommendedProfessions();
+          await APIService.fetchRecommendedProfessions(token, tokenType);
       setState(() {
         recommendedProfessions = professions;
       });
