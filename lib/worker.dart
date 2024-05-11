@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:NeighbourPro/api_client.dart';
 import 'package:NeighbourPro/global_vars.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AssignedWorksPage extends StatelessWidget {
   @override
@@ -98,6 +101,39 @@ class WorkDetailsPage extends StatelessWidget {
       print('error in accepting work: $e');
       return false;
     }
+  }
+  Future<Map<String,dynamic>> fetchClientDetails() async{
+      Map<String, String?> tokenData = await getGlobalToken();
+      String token = tokenData['token'] as String;
+      String tokenType = tokenData['tokenType'] as String;
+      try{
+        final Map<String,dynamic> clientDetails = await APIService.fetchClientDetails(work.id, token, tokenType);
+        // final String latitude = clientDetails['latitude'];
+        // final String longitude = clientDetails['longitude'];
+        print(clientDetails);
+        return clientDetails;
+
+    }
+    catch(e){
+      print('error in fetching client details: $e');
+      throw e;
+      
+    }
+  }
+  void launchGoogleMaps(latitude,longitude) async {
+    // Construct the URL with the specified latitude and longitude
+  final url = 'https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}';
+
+    // Check if the URL can be launched
+
+  // Check if the URL can be launched
+    if (await canLaunchUrl(Uri.parse(url))) {
+    // Launch the URL
+    await launchUrl(Uri.parse(url));
+  } else {
+    // Handle the case when the URL cannot be launched
+    print('Could not launch $url');
+  }
   }
 
   @override
@@ -226,8 +262,16 @@ Widget build(BuildContext context) {
           if (work.status == 'accepted') ...[
             Center(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  //call the fetchClientDetails function to get latitude and longitude    
+                  final Map<String, dynamic> clientDetails = await fetchClientDetails();
+                  final String latitude = clientDetails['latitude'];
+                  final String longitude = clientDetails['longitude'];
+                  //pass the latitude and longitude to the launchGoogleMaps function
+                  
+                   launchGoogleMaps(latitude,longitude);
                   // Implement Start Now logic
+                 
                 },
                 child: Text('Start Now'),
               ),

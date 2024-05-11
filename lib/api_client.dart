@@ -339,4 +339,22 @@ class APIService {
       throw Exception('Failed to accept work: $e');
     }
   }
-}
+
+  static Future<Map<String, dynamic>> fetchClientDetails(int id, String token, String tokenType)async{
+    try {
+      final response = await http.get(
+        Uri.parse('$baseURL/work/client-contact-details/$id'),
+        headers: <String, String>{
+          'Authorization': '$tokenType $token',
+          },
+      );
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to fetch user data');
+      }
+    } catch (e) {
+      throw Exception('Error fetching user data: $e');
+    }
+  }
+  }
