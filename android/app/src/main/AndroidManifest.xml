@@ -49,4 +49,5 @@
             <category android:name="android.intent.category.DEFAULT" />
         </intent>
     </queries>
+    
 </manifest>
