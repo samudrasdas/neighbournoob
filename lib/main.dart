@@ -4,7 +4,8 @@ import 'package:NeighbourPro/home_page.dart'; // Assuming you have a home page i
 import 'package:NeighbourPro/login_screen.dart';
 import 'package:NeighbourPro/profilepage.dart';
 import 'package:NeighbourPro/signup_screen.dart';
-import 'package:NeighbourPro/worker.dart'; // Assuming you have a worker page implementation
+import 'package:NeighbourPro/worker.dart';
+import 'package:NeighbourPro/history.dart'; 
 import 'package:NeighbourPro/global_vars.dart';
 
 void main() async {
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => SignupPage(),
         '/home': (context) => HomePage(),
         '/worker': (context) => AssignedWorksPage(),
+        '/history': (context) => BookedWorksPage(),
         '/profile': (context) => ProfilePage(),
       },
     );

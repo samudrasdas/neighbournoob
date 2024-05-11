@@ -77,6 +77,7 @@ class _ProfessionDetailPageState extends State<ProfessionDetailPage> {
           String formattedDistance = professional.distance.toStringAsFixed(1);
           return GestureDetector(
             onTap: () {
+              print(professional.avgRating);
               // Navigate to another screen when a worker widget is tapped
               Navigator.push(
                 context,

@@ -314,7 +314,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             icon: Icon(Icons.history),
             color: Colors.black,
             onPressed: () {
-              print('history icon pressed');
+              Navigator.pushNamed(context, '/history');
             },
           ),
           if (role == 'worker')
