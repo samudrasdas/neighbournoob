@@ -252,9 +252,13 @@ class WorkDetailsPage extends StatelessWidget {
                     child: Text('Accept'),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      // Implement accept and start now logic
-                    },
+                      onPressed: () async {
+                        final Map<String, dynamic> clientDetails =
+                            await fetchClientDetails();
+                        final String latitude = clientDetails['latitude'];
+                        final String longitude = clientDetails['longitude'];
+                        launchGoogleMaps(latitude, longitude);
+                      },
                     child: Text('Accept and Start Now'),
                   ),
                   ElevatedButton(
