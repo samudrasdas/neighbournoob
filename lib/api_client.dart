@@ -324,16 +324,19 @@ class APIService {
   }
 
   static Future<bool> acceptWork(int id, String token,String tokenType) async {
+    try {
     final response = await http.post(
       Uri.parse('$baseURL/work/accept-work/$id'),
       headers: <String, String>{
         'Authorization': '$tokenType $token',
       },
     );
-    if (response.statusCode == 200) {
+    if (response.statusCode != 200) {
+    throw Exception('Failed to accept work: ${json.decode(response.body)}');
+    }
       return true; // Work accepted successfully
-    } else {
-      throw Exception('Failed to accept work: ${response.statusCode}');
+    } catch (e) {
+      throw Exception('Failed to accept work: $e');
     }
   }
 }
