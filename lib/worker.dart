@@ -33,7 +33,8 @@ class _AssignedWorksBodyState extends State<AssignedWorksBody> {
     String token = tokenData['token'] as String;
     String tokenType = tokenData['tokenType'] as String;
     try {
-      final List<Works> works = await APIService.fetchAssignedWorks(token, tokenType);
+      final List<Works> works =
+          await APIService.fetchAssignedWorks(token, tokenType);
       setState(() {
         assignedWorks = works;
       });
@@ -68,7 +69,8 @@ class _AssignedWorksBodyState extends State<AssignedWorksBody> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => WorkDetailsPage(work: assignedWorks[index]),
+                    builder: (context) =>
+                        WorkDetailsPage(work: assignedWorks[index]),
                   ),
                 );
               },

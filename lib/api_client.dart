@@ -152,6 +152,49 @@ class APIService {
     }
   }
 
+  static Future<List<Works>> fetchBookedWorks(
+      String token, String tokenType) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseURL/work/booked-works'),
+        headers: <String, String>{
+          'Authorization': '$tokenType $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as List;
+        return data.map((item) => Works.fromJson(item)).toList();
+      } else {
+        throw Exception('Failed to fetch assigned works: ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching assigned works: $e');
+    }
+  }
+
+  static Future<bool> writeReview(
+      int workID, String review, double rating, String token, String tokenType) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseURL/work/review-work/$workID'),
+        headers: <String, String>{
+          'Authorization': '$tokenType $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'review': review,
+          'rating': rating,
+        }),
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to write review: ${response.body}');
+      }
+      return true;
+    } catch (e) {
+      throw Exception('$e');
+    }
+  }
+
   static Future<List<Professional>> fetchProfessionals(
       int id, String token, String tokenType) async {
     final response = await http.get(
