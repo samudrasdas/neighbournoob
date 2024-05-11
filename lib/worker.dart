@@ -120,18 +120,18 @@ class WorkDetailsPage extends StatelessWidget {
       
     }
   }
-  void launchGoogleMaps(latitude,longitude) async {
+  static void launchGoogleMaps(latitude,longitude,{LaunchMode linkLaunchMode = LaunchMode.externalApplication}) async {
     // Construct the URL with the specified latitude and longitude
-  final url = 'https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}';
+  var url = Uri.parse('https://www.google.com/maps/dir/?api=1&query=${latitude},${longitude}');
 
     // Check if the URL can be launched
 
   // Check if the URL can be launched
-    if (await canLaunchUrl(Uri.parse(url))) {
+    if (await canLaunchUrl(url)) {
     // Launch the URL
-    await launchUrl(Uri.parse(url));
+    await launchUrl(url);
   } else {
-    // Handle the case when the URL cannot be launched
+    // Handle the case when the URL cannot be+ launched
     print('Could not launch $url');
   }
   }
