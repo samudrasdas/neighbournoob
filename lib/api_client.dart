@@ -21,7 +21,7 @@ class Works {
   final String scheduledDate;
   final String scheduledTime;
   final int professionID;
-  final String status;
+  late final String status;
 
   Works(this.id, this.userDescription, this.scheduledDate, this.scheduledTime,
       this.professionID, this.status);
@@ -400,4 +400,59 @@ class APIService {
       throw Exception('Error fetching user data: $e');
     }
   }
+
+  static Future<bool> startWork(int id, String token, String tokenType) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseURL/work/start-work/$id'),
+        headers: <String, String>{
+          'Authorization': '$tokenType $token',
+        },
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to start work: ${json.decode(response.body)}');
+      }
+      return true;
+    } catch (e) {
+      throw Exception('Failed to complete work: $e');
+    }
   }
+
+  static Future<bool> finalCost(int id, double cost, String token, String tokenType) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseURL/work/quote-final-cost/$id'),
+        headers: <String, String>{
+          'Authorization': '$tokenType $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'final_cost': cost,
+        }),
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to finalize cost: ${json.decode(response.body)}');
+      }
+      return true;
+    } catch (e) {
+      throw Exception('Failed to finalize cost: $e');
+    }
+  }
+
+  static Future<bool> rejectWork(int id, String token, String tokenType) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseURL/work/reject-work/$id'),
+        headers: <String, String>{
+          'Authorization': '$tokenType $token',
+        },
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to cancel work: ${json.decode(response.body)}');
+      }
+      return true;
+    } catch (e) {
+      throw Exception('Failed to cancel work: $e');
+    }
+  }
+}
