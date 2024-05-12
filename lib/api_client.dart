@@ -22,9 +22,10 @@ class Works {
   final String scheduledTime;
   final int professionID;
   late final String status;
+  final double? final_cost;
 
   Works(this.id, this.userDescription, this.scheduledDate, this.scheduledTime,
-      this.professionID, this.status);
+      this.professionID, this.status,this.final_cost);
 
   factory Works.fromJson(Map<String, dynamic> json) {
     return Works(
@@ -34,6 +35,7 @@ class Works {
       json['scheduled_time'] as String,
       json['profession_id'] as int,
       json['status'] as String,
+      json['final_cost'] as double?,
     );
   }
 }
@@ -472,6 +474,24 @@ class APIService {
       return true;
     } catch (e) {
       throw Exception('Failed to cancel work: $e');
+    }
+  }
+
+
+  static Future<bool> recievePayment(int id, String token, String tokenType) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseURL/work/received-payment/$id'),
+        headers: <String, String>{
+          'Authorization': '$tokenType $token',
+        },
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to receive payment: ${json.decode(response.body)}');
+      }
+      return true;
+    } catch (e) {
+      throw Exception('Failed to receive payment: $e');
     }
   }
 }

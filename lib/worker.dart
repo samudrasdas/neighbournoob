@@ -146,6 +146,18 @@ class WorkDetailsPage extends StatelessWidget {
       return false;
     } 
   }
+
+  Future<void> recievePayment(int workID) async {
+    Map<String, String?> tokenData = await getGlobalToken();
+    String token = tokenData['token'] as String;
+    String tokenType = tokenData['tokenType'] as String;
+    try {
+      await APIService.recievePayment(work.id, token, tokenType);
+    } catch (e) {
+      print('error in recieving payment: $e');
+
+    }
+  }
    Future<void> _showCostInputDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
@@ -179,7 +191,7 @@ class WorkDetailsPage extends StatelessWidget {
     );
   }
 
-  Future<bool> rejectWork() async {
+   Future<bool> rejectWork() async {
     Map<String, String?> tokenData = await getGlobalToken();
     String token = tokenData['token'] as String;
     String tokenType = tokenData['tokenType'] as String;
@@ -191,8 +203,7 @@ class WorkDetailsPage extends StatelessWidget {
       return false;
     }
   }
-
-  static void launchGoogleMaps(latitude, longitude,
+   static void launchGoogleMaps(latitude, longitude,
       {LaunchMode linkLaunchMode = LaunchMode.externalApplication}) async {
     // Construct the URL with the specified latitude and longitude
     var url = Uri.parse(
@@ -212,6 +223,7 @@ class WorkDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool recieved=work.final_cost !=null;
     return Scaffold(
       appBar: AppBar(
         title: Text('Work Details'),
@@ -272,6 +284,7 @@ class WorkDetailsPage extends StatelessWidget {
                         if (accepted) {
                           // Work accepted successfully
                           // You can perform further actions such as navigation or UI updates
+                          Navigator.popUntil(context, ModalRoute.withName('/home'));
                           print('Work accepted successfully');
                         } else {
                           // Handle case when work was not accepted
@@ -408,29 +421,59 @@ class WorkDetailsPage extends StatelessWidget {
                 ),
               ),
             ],
-            if (work.status == 'started') ...[
+           if (work.status == 'started') ...[
             Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  // Implement logic to show cost
-                  ///take cost input
-                  _showCostInputDialog(context);
-
-                },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(150, 50), // Adjust size as needed
-                ),
-                child: Text(
-                  'Cost',
-                  style: TextStyle(
-                      fontSize: 18), // Adjust font size as needed
-                ),
-              ),
+              child: recieved
+                  ? ElevatedButton(
+                      onPressed: () async {
+                        // Implement logic to receive payment
+                        try {
+                          await recievePayment(work.id);
+                          // Payment received successfully
+                          Fluttertoast.showToast(
+                  msg: "Payment recieved successfully",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  fontSize: 16.0,
+                );
+                Navigator.popUntil(context, ModalRoute.withName('/home'));
+                        } catch (e) {
+                          print('Error receiving payment: $e');
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Failed to receive payment'),
+                            ),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(150, 50),
+                      ),
+                      child: Text(
+                        'Receive Payment',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    )
+                  : ElevatedButton(
+                      onPressed: () {
+                        // Implement logic to show cost
+                        _showCostInputDialog(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(150, 50),
+                      ),
+                      child: Text(
+                        'Cost',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
             ),
           ],
           ],
-        ),
+          
       ),
+      )
     );
   }
 }
