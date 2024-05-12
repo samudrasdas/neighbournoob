@@ -423,16 +423,14 @@ class APIService {
   }
 
   static Future<bool> finalCost(int id, double cost, String token, String tokenType) async {
+    print(cost);
     try {
       final response = await http.post(
-        Uri.parse('$baseURL/work/quote-final-cost/$id'),
+        Uri.parse('$baseURL/work/quote-final-cost/$id?final_cost=$cost'),
         headers: <String, String>{
           'Authorization': '$tokenType $token',
           'Content-Type': 'application/json',
         },
-        body: jsonEncode(<String, dynamic>{
-          'final_cost': cost,
-        }),
       );
       if (response.statusCode != 200) {
         throw Exception('Failed to finalize cost: ${json.decode(response.body)}');

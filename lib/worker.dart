@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:NeighbourPro/api_client.dart';
 import 'package:NeighbourPro/global_vars.dart';
@@ -135,12 +133,11 @@ class WorkDetailsPage extends StatelessWidget {
     }
   }
 
-  Future<bool> finalCost() async {
+  Future<bool> finalCost(double cost) async {
     Map<String, String?> tokenData = await getGlobalToken();
     String token = tokenData['token'] as String;
     String tokenType = tokenData['tokenType'] as String;
     try {
-      double cost = 0.0;
       final bool costResult = await APIService.finalCost(work.id, cost, token, tokenType);
       return costResult;
     } catch (e) {
@@ -164,7 +161,7 @@ class WorkDetailsPage extends StatelessWidget {
               child: Text('Submit'),
               onPressed: () {
                 double cost = double.tryParse(_costController.text) ?? 0.0;
-                finalCost();
+                finalCost(cost);
                 Navigator.of(context).pop();
               },
             ),
