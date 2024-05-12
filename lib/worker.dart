@@ -88,6 +88,7 @@ class _AssignedWorksBodyState extends State<AssignedWorksBody> {
 
 class WorkDetailsPage extends StatelessWidget {
   final Works work;
+  final TextEditingController _costController = TextEditingController();
 
   WorkDetailsPage({required this.work});
   Future<bool> acceptWork() async {
@@ -134,17 +135,44 @@ class WorkDetailsPage extends StatelessWidget {
     }
   }
 
-  // Future<bool> finalCost() async {
-  //   Map<String, String?> tokenData = await getGlobalToken();
-  //   String token = tokenData['token'] as String;
-  //   String tokenType = tokenData['tokenType'] as String;
-  //   try {
-  //     await APIService.finalCost(work.id,cost, token, tokenType);
-  //   } catch (e) {
-  //     print('error in posting cost: $e');
-  //     return false;
-  //   }
-  // }
+  Future<bool> finalCost() async {
+    Map<String, String?> tokenData = await getGlobalToken();
+    String token = tokenData['token'] as String;
+    String tokenType = tokenData['tokenType'] as String;
+    try {
+      double cost = 0.0;
+      final bool costResult = await APIService.finalCost(work.id, cost, token, tokenType);
+      return costResult;
+    } catch (e) {
+      print('error in final cost: $e');
+      return false;
+    } 
+  }
+   Future<void> _showCostInputDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Quote final cost'),
+          content: TextField(
+            controller: _costController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: 'Cost'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Submit'),
+              onPressed: () {
+                double cost = double.tryParse(_costController.text) ?? 0.0;
+                finalCost();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<bool> rejectWork() async {
     Map<String, String?> tokenData = await getGlobalToken();
@@ -380,7 +408,8 @@ class WorkDetailsPage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   // Implement logic to show cost
-                  //post methid to give the cost
+                  ///take cost input
+                  _showCostInputDialog(context);
 
                 },
                 style: ElevatedButton.styleFrom(
