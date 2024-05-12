@@ -100,9 +100,21 @@ class BookedWorksDetailsPage extends StatelessWidget {
     }
   }
 
+  Future<void> sentPayment(int workID) async {
+    Map<String, String?> tokenData = await getGlobalToken();
+    String token = tokenData['token'] as String;
+    String tokenType = tokenData['tokenType'] as String;
+    try {
+      await APIService.sentPayment(workID, token, tokenType);
+    } catch (e) {
+      print('$e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isClosed = work.status == "closed";
+    bool hasStarted = work.status == "started";
     double? rating;
     String? review;
 
@@ -130,7 +142,7 @@ class BookedWorksDetailsPage extends StatelessWidget {
                       'Scheduled Time',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    Text(work.scheduledTime),
+                    Text(work.scheduledTime.substring(0, 5)),
                     SizedBox(height: 16),
                     Text(
                       'Status',
@@ -163,6 +175,32 @@ class BookedWorksDetailsPage extends StatelessWidget {
                       Size(double.infinity, 50.0)), // Button takes whole width
                 ),
                 child: Text('Write Review'),
+              ),
+            ),
+          if (hasStarted)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(10.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  sentPayment(work.id);
+                  Fluttertoast.showToast(
+                    msg: 'Payment sent',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                  );
+                  Navigator.popUntil(context, ModalRoute.withName('/home'));
+                },
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  minimumSize: MaterialStateProperty.all(
+                      Size(double.infinity, 50.0)), // Button takes whole width
+                ),
+                child: Text('Sent Payment'),
               ),
             ),
         ],

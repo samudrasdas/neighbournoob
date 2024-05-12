@@ -258,6 +258,23 @@ class APIService {
     }
   }
 
+  static Future<bool> sentPayment(int workID, String token, String tokenType) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseURL/work/sent-payment/$workID'),
+        headers: <String, String>{
+          'Authorization': '$tokenType $token',
+        },
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to send payment: ${response.body}');
+      }
+      return true;
+    } catch (e) {
+      throw Exception('Failed to send payment: $e');
+    }
+  }
+
   static Future<bool> scheduleWork(
       String userDesc,
       String schedDate,
