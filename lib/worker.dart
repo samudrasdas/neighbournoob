@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:NeighbourPro/api_client.dart';
 import 'package:NeighbourPro/global_vars.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AssignedWorksPage extends StatelessWidget {
@@ -162,6 +163,13 @@ class WorkDetailsPage extends StatelessWidget {
               onPressed: () {
                 double cost = double.tryParse(_costController.text) ?? 0.0;
                 finalCost(cost);
+                Fluttertoast.showToast(
+                  msg: "Cost submitted successfully",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  fontSize: 16.0,
+                );
                 Navigator.of(context).pop();
               },
             ),
