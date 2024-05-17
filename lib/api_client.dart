@@ -481,7 +481,7 @@ class APIService {
   static Future<bool> recievePayment(int id, String token, String tokenType) async {
     try {
       final response = await http.post(
-        Uri.parse('$baseURL/work/received-payment/$id'),
+        Uri.parse('$baseURL/work/recieved-payment/$id'),
         headers: <String, String>{
           'Authorization': '$tokenType $token',
         },

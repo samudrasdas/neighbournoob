@@ -216,6 +216,12 @@ class _AddressPageState extends State<AddressPage> {
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           await _addAddress();
+                          Fluttertoast.showToast(
+                            msg: 'Address added successfully',
+                            toastLength: Toast.LENGTH_LONG,
+                          );
+                        Navigator.popUntil(context, ModalRoute.withName('/home'));
+
                         }
                       },
                       style: ElevatedButton.styleFrom(
